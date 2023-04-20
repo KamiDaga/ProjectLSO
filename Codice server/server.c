@@ -21,6 +21,9 @@ pthread_t cl2 =-1;
 pthread_t oos1;
 pthread_t oos2;
 
+int cl1ToOOs = 0;
+int cl2ToOOs = 0;
+
 
 int inServingWaiting = 0;
 
@@ -170,7 +173,71 @@ void farewell(pnodet* clientconn)
 
 void order(pnodet* clientconn)
 {
-    printf("Simulazione di ordine\n");
+    //printf("Simulazione di ordine\n");
+    char* esempio = "Margarita\nCosmopolitan\nDaiquiri\nGimlet\nManhattan\n";
+    char risposta[20];
+    int quittiamo = 0;
+    send(clientconn->socketc, esempio,strlen(esempio),0);
+    while(quittiamo == 0)
+    {
+        memset(risposta,0,sizeof(risposta));
+        if(read(clientconn->socketc,risposta,sizeof(risposta))==0)
+            strcpy(risposta,"gone");
+        printf("Il client ha risposto %s\n\n",risposta);
+
+        if(strcmp(risposta,"oos")==0)
+        {
+            char* rispostaS = "A piu tardi!\n";
+            send(clientconn->socketc, rispostaS,strlen(rispostaS),0);
+        }
+        else if(strcmp(risposta,"gone")==0)
+        {
+            char* rispostaS = "Arrivederci!\n";
+            send(clientconn->socketc, rispostaS,strlen(rispostaS),0);
+            quittiamo = 1;
+        }
+        else
+        {
+            int delmenu = 0;
+            int i = 0;
+            int j = 0;
+            char elementocorrente[20];
+            memset(elementocorrente,0,sizeof(elementocorrente));
+            while(delmenu ==0 && esempio[i] != '\0')
+            {
+    
+                if(esempio[i]!='\n')
+                {
+                    elementocorrente[j] = esempio[i];
+                    j++;
+                    i++;
+                }
+                else if(esempio[i] == '\n')
+                {
+                    elementocorrente[j] = '\0';
+                    j = 0;
+                    printf("%s(client) == %s?",risposta, elementocorrente);
+                    i++;
+                    if(strcmp(elementocorrente,risposta)==0)
+                        delmenu = 1;
+                    memset(elementocorrente,0,sizeof(elementocorrente));
+                }
+            }
+            if(delmenu==1)
+            {
+                char* rispostaS[100];
+                memset(rispostaS,0,sizeof(rispostaS));
+                sprintf(rispostaS,"Ottima scelta! Ecco il tuo %s\n",risposta);
+                send(clientconn->socketc, rispostaS,strlen(rispostaS),0);
+                quittiamo = 1;
+            }
+            else
+            {
+                char* rispostaS= "Mi dispiace, non abbiamo trovato questo elemento\n";
+                send(clientconn->socketc, rispostaS,strlen(rispostaS),0);
+            }
+        }
+    }
     pthread_mutex_lock(&mutexQueue);
     clientconn->state = "SERVED";
     pthread_mutex_unlock(&mutexQueue);
@@ -214,11 +281,7 @@ void outofsight(void* tid)
     pthread_mutex_unlock(&mutexQueue);
     while(1)
     {
-        //recvfrom(nodo->socketc, ....);
-        //logica riguardante tutte le richieste in arrivo 
-        //da parte del client, quindi:
-        //out of sight, che cosa sceglie e se
-        //il serving va fatto con o senza dialogo
+        //accepr
     }
 }
 
