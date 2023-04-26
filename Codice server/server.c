@@ -6,6 +6,7 @@
 #include <stdlib.h>
 #include <arpa/inet.h>
 #include <string.h>
+#include <errno.h>
 
 //mutex per la lista
 pthread_mutex_t mutexQueue;
@@ -18,11 +19,11 @@ pthread_t queuemanager; //processo che gestisce le persone in ordering/serving
 pthread_t cl1 =-1;
 pthread_t cl2 =-1;
 //Thread per l 'out of sight
-pthread_t oos1;
-pthread_t oos2;
+// pthread_t oos1;
+// pthread_t oos2;
 
-int cl1ToOOs = 0;
-int cl2ToOOs = 0;
+// int cl1ToOOs = 0;
+// int cl2ToOOs = 0;
 
 
 int inServingWaiting = 0;
@@ -34,7 +35,7 @@ struct pnode{
     struct sockaddr_in indirizzoc; //indirizzo client
     pthread_t id; //pthread id
     char* state;//Possibili valori:
-    //WELCOME, WAITING, ORDERING, SERVING, SERVED, FAREWELLING,GONE, OOS
+    //WELCOME, WAITING, ORDERING, SERVING, SERVED, FAREWELLING,GONE
     
     struct pnode * next; //prossimo elemento
     struct pnode * prev; //elemento successivo
@@ -139,6 +140,8 @@ void removeDisconnected()
             pnodet* tmp = explorer;
             explorer = explorer->next;
             removeNode(tmp);
+            close(tmp->socketc);
+            free(tmp);
         }
         else
             explorer = explorer->next;
@@ -163,32 +166,87 @@ void printlist()
 //////////////////////////////
 void farewell(pnodet* clientconn)
 {
-    printf("Arrivederci!\n");
+    char addio[30];
+    strcpy(addio,"Alla prossima bevuta!\n");
+    send(clientconn->socketc,addio,sizeof(addio),0);
     pthread_mutex_lock(&mutexQueue);
     clientconn->state = "GONE";
     pthread_mutex_unlock(&mutexQueue);
-    printf("%s\n",clientconn->state);
+    //printf("%s\n",clientconn->state);
     
+}
+
+void serve(pnodet* clientconn, char* drink)
+{
+    char* request = "Mentre preparo il tuo drink, ti andrebbe una chiacchierata?\n";
+    //printf("%s\n",drink);
+    char risposta[20];
+    int prepare = 1;
+    int quittiamo = 0;
+    send(clientconn->socketc, request,strlen(request),0);
+    while(quittiamo == 0)
+    {
+        memset(risposta,0,sizeof(risposta));
+        if(read(clientconn->socketc,risposta,sizeof(risposta))==0)
+            {
+                strcpy(risposta,"gone");
+            }
+        if(strcmp(risposta,"gone")==0)
+        {
+            prepare = 0;
+            quittiamo = 1;
+        }
+        else if(strcmp(risposta,"oos")==0)
+        {  
+            char* rispostaS = prepare == 1 ? "A piu tardi!\n" : "Bentornato!";
+            send(clientconn->socketc, rispostaS,strlen(rispostaS),0);
+            prepare = prepare==1 ?  0 : 1;
+        }
+        if(prepare == 1 && strcmp(risposta,"oos")!=0)
+        {
+            if(strcmp(risposta,"Si")==0)
+            {
+                    //domande e risposte
+            }
+            else
+            {
+                sleep(5);
+                char rispostaS[100];
+                memset(rispostaS,0,sizeof(rispostaS));
+                sprintf(rispostaS,"Ecco il tuo %s!\n",drink);
+                send(clientconn->socketc,rispostaS,sizeof(rispostaS),0);
+            }
+            quittiamo = 1;
+        }
+    }
+    pthread_mutex_lock(&mutexQueue);
+    clientconn->state = "SERVED";
+    pthread_mutex_unlock(&mutexQueue);
+    while(strcmp(clientconn->state,"FAREWELLING")!=0)
+    {
+        
+    }
+    farewell(clientconn);
 }
 
 void order(pnodet* clientconn)
 {
-    //printf("Simulazione di ordine\n");
-    char* esempio = "Margarita\nCosmopolitan\nDaiquiri\nGimlet\nManhattan\n";
+    char* menu = "Margarita\nCosmopolitan\nDaiquiri\nGimlet\nManhattan\n";
     char risposta[20];
     int quittiamo = 0;
-    send(clientconn->socketc, esempio,strlen(esempio),0);
+    int oos = 0;
+    send(clientconn->socketc, menu,strlen(menu),0);
     while(quittiamo == 0)
     {
         memset(risposta,0,sizeof(risposta));
         if(read(clientconn->socketc,risposta,sizeof(risposta))==0)
             strcpy(risposta,"gone");
-        printf("Il client ha risposto %s\n\n",risposta);
-
+        
         if(strcmp(risposta,"oos")==0)
         {
-            char* rispostaS = "A piu tardi!\n";
+            char* rispostaS = oos == 0? "A piu tardi!\n" : "Bentornato!\n";
             send(clientconn->socketc, rispostaS,strlen(rispostaS),0);
+            oos = oos==0? 1 : 0;
         }
         else if(strcmp(risposta,"gone")==0)
         {
@@ -196,27 +254,27 @@ void order(pnodet* clientconn)
             send(clientconn->socketc, rispostaS,strlen(rispostaS),0);
             quittiamo = 1;
         }
-        else
+        else if(oos==0)
         {
             int delmenu = 0;
             int i = 0;
             int j = 0;
             char elementocorrente[20];
             memset(elementocorrente,0,sizeof(elementocorrente));
-            while(delmenu ==0 && esempio[i] != '\0')
+            while(delmenu ==0 && menu[i] != '\0')
             {
     
-                if(esempio[i]!='\n')
+                if(menu[i]!='\n')
                 {
-                    elementocorrente[j] = esempio[i];
+                    elementocorrente[j] = menu[i];
                     j++;
                     i++;
                 }
-                else if(esempio[i] == '\n')
+                else if(menu[i] == '\n')
                 {
                     elementocorrente[j] = '\0';
                     j = 0;
-                    printf("%s(client) == %s?",risposta, elementocorrente);
+                    //printf("%s(client) == %s?",risposta, elementocorrente);
                     i++;
                     if(strcmp(elementocorrente,risposta)==0)
                         delmenu = 1;
@@ -225,9 +283,9 @@ void order(pnodet* clientconn)
             }
             if(delmenu==1)
             {
-                char* rispostaS[100];
+                char rispostaS[100];
                 memset(rispostaS,0,sizeof(rispostaS));
-                sprintf(rispostaS,"Ottima scelta! Ecco il tuo %s\n",risposta);
+                sprintf(rispostaS,"Ottima scelta!\n");
                 send(clientconn->socketc, rispostaS,strlen(rispostaS),0);
                 quittiamo = 1;
             }
@@ -239,14 +297,12 @@ void order(pnodet* clientconn)
         }
     }
     pthread_mutex_lock(&mutexQueue);
-    clientconn->state = "SERVED";
+    clientconn->state = "SERVING";
     pthread_mutex_unlock(&mutexQueue);
-    printf("%s\n",clientconn->state);
-    while(strcmp(clientconn->state,"FAREWELLING")!=0)
-    {
-        
-    }
-    farewell(clientconn);
+    //printf("%s\n",clientconn->state);
+    // char* inoltro = malloc(20*sizeof*inoltro);
+    // sprintf(inoltro,"%s",risposta);
+    serve(clientconn,risposta);
 }
 
 void welcome(void* client)
@@ -258,7 +314,7 @@ void welcome(void* client)
     pthread_mutex_lock(&mutexQueue);
     clientconn->state = "WAITING";
     pthread_mutex_unlock(&mutexQueue);
-    printf("%s\n", clientconn->state);
+    //printf("%s\n", clientconn->state);
     while(strcmp(clientconn->state,"ORDERING")!=0)
     {
 
@@ -266,8 +322,11 @@ void welcome(void* client)
     order(clientconn);
     // close(clientconn->socketc);
     // pthread_kill(mainthread,SIGUSR1);
-    close(clientconn->socketc);
-    free(clientconn);
+    // pthread_mutex_lock(&mutexQueue);
+    // close(clientconn->socketc);
+    // removeNode(clientconn);
+    // free(clientconn);
+    // pthread_mutex_unlock(&mutexQueue);
     pthread_exit(0);
 }
 
@@ -295,14 +354,17 @@ void checkfarewelling()
     {
         if(strcmp(explorer->state,"SERVED")==0)
         {  
-            inServingWaiting--;
+        
 
             
             if(explorer->id == cl1)
-                pthread_cancel(oos1);
+                cl1=-1;
+                // pthread_cancel(oos1);
             else
-                pthread_cancel(oos2);
+                cl2=-1;
+                // pthread_cancel(oos2);
             explorer->state = "FAREWELLING";
+            inServingWaiting--;
         }
         explorer = explorer->next;
     }   
@@ -319,14 +381,14 @@ void checkwaiting()
             if(cl1 == -1)
             {
                 cl1 = explorer->id;
-                pthread_create(&oos1,NULL,outofsight,&cl1);
-                pthread_detach(oos1);
+                // pthread_create(&oos1,NULL,outofsight,&cl1);
+                // pthread_detach(oos1);
             }
             else
             {
                 cl2 = explorer->id;
-                pthread_create(&oos2,NULL,outofsight,&cl2);
-                pthread_detach(oos2);
+                // pthread_create(&oos2,NULL,outofsight,&cl2);
+                // pthread_detach(oos2);
             }
             explorer->state = "ORDERING";
 
@@ -358,12 +420,18 @@ void managequeue(void* input)
 
 ///////////////////////////////
 
+void nada()
+{
+
+}
+
 int main()
 {
     // if((queuemanager = fork()) == 0)
     // {
     //     managequeue();
     // }
+    signal(SIGPIPE,nada);
     pthread_mutex_init(&mutexQueue,NULL);
     pnodet* node = NULL;    
     mainthread = pthread_self();
