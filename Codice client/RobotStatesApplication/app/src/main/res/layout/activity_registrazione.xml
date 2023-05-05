@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".RegistrazioneActivity">
+
+    <ImageView
+        android:id="@+id/iconaRegistrazione"
+        android:layout_width="117dp"
+        android:layout_height="118dp"
+        android:src="@drawable/ic_android_black_24dp"
+        app:layout_constraintBottom_toTopOf="@+id/promptRegistrazione"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="1.0" />
+
+    <TextView
+        android:id="@+id/promptRegistrazione"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="30dp"
+        android:text="Crea un nuovo account"
+        android:textSize="26sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.231" />
+
+    <EditText
+        android:id="@+id/editTextUsernameRegistrazione"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="7dp"
+        android:layout_marginTop="7dp"
+        android:layout_marginEnd="37dp"
+        android:ems="10"
+        android:inputType="text"
+        android:singleLine="true"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@+id/labelUsernameRegistrazione"
+        app:layout_constraintTop_toBottomOf="@+id/labelUsernameRegistrazione"
+        app:layout_constraintVertical_bias="0.0" />
+
+    <TextView
+        android:id="@+id/labelPasswordRegistrazione"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="30dp"
+        android:text="Password"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/labelUsernameRegistrazione"
+        app:layout_constraintVertical_bias="0.17" />
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/bottoneAnnullaRegistrazione"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/secondarybuttonbg"
+        android:text="Torna indietro"
+        android:textAllCaps="false"
+        android:textSize="16sp"
+        app:layout_constraintBottom_toBottomOf="@+id/bottoneInizioQuestionario"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@+id/editTextPasswordRegistrazione"
+        app:layout_constraintTop_toTopOf="@+id/bottoneInizioQuestionario"
+        app:layout_constraintVertical_bias="0.0" />
+
+    <TextView
+        android:id="@+id/labelUsernameRegistrazione"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="30dp"
+        android:layout_marginTop="30dp"
+        android:text="Username"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/promptRegistrazione"
+        app:layout_constraintVertical_bias="0.004" />
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/bottoneInizioQuestionario"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/mainbuttonbg"
+        android:text="Procedi al questionario"
+        android:textAllCaps="false"
+        android:textSize="16sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/editTextPasswordRegistrazione"
+        app:layout_constraintHorizontal_bias="0.989"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/editTextPasswordRegistrazione"
+        app:layout_constraintVertical_bias="0.132" />
+
+    <EditText
+        android:id="@+id/editTextPasswordRegistrazione"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="7dp"
+        android:layout_marginTop="7dp"
+        android:layout_marginEnd="37dp"
+        android:ems="10"
+        android:inputType="text|textPassword"
+        android:singleLine="true"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@+id/labelUsernameRegistrazione"
+        app:layout_constraintTop_toBottomOf="@+id/labelPasswordRegistrazione"
+        app:layout_constraintVertical_bias="0.0" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

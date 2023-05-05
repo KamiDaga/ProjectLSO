@@ -37,7 +37,7 @@
         app:layout_constraintVertical_bias="0.311" />
 
     <ImageView
-        android:id="@+id/imageView2"
+        android:id="@+id/iconaLogin"
         android:layout_width="117dp"
         android:layout_height="118dp"
         android:layout_marginTop="60dp"
@@ -56,9 +56,9 @@
         android:textSize="26sp"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="@+id/imageView2"
-        app:layout_constraintStart_toStartOf="@+id/imageView2"
-        app:layout_constraintTop_toBottomOf="@+id/imageView2"
+        app:layout_constraintEnd_toEndOf="@+id/iconaLogin"
+        app:layout_constraintStart_toStartOf="@+id/iconaLogin"
+        app:layout_constraintTop_toBottomOf="@+id/iconaLogin"
         app:layout_constraintVertical_bias="0.0" />
 
     <TextView
