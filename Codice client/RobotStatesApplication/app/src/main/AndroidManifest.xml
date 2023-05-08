@@ -16,11 +16,6 @@
             android:name=".RegistrazioneActivity"
             android:exported="false" />
         <activity
-            android:name=".RegistrazioneActivity"
-            android:exported="false"
-            android:label="@string/title_activity_registrazione"
-            android:theme="@style/Theme.RobotStatesApplication" />
-        <activity
             android:name=".MainActivity"
             android:exported="true">
             <intent-filter>
