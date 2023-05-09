@@ -5,28 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/background_drinks"
-    tools:context=".MainActivity">
-
-    <EditText
-        android:id="@+id/editTextPasswordLogin"
-        android:layout_width="0dp"
-        android:layout_height="46dp"
-        android:layout_marginStart="7dp"
-        android:layout_marginTop="7dp"
-        android:layout_marginEnd="47dp"
-        android:ems="10"
-        android:background="@drawable/edittext_bg"
-        android:padding="10dp"
-        android:textCursorDrawable="@drawable/cursor_edittext"
-        android:inputType="textPassword"
-        android:singleLine="true"
-        android:textColor="@color/black"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toStartOf="@+id/labelPasswordLogin"
-        app:layout_constraintTop_toBottomOf="@+id/labelUsernameLogin"
-        app:layout_constraintVertical_bias="0.268" />
+    tools:context=".LoginActivity">
 
     <TextView
         android:id="@+id/labelPasswordLogin"
@@ -103,13 +82,13 @@
         android:layout_marginStart="7dp"
         android:layout_marginTop="7dp"
         android:layout_marginEnd="47dp"
-        android:ems="10"
         android:background="@drawable/edittext_bg"
-        android:padding="10dp"
-        android:textCursorDrawable="@drawable/cursor_edittext"
+        android:ems="10"
         android:inputType="text"
+        android:padding="10dp"
         android:singleLine="true"
         android:textColor="@color/black"
+        android:textCursorDrawable="@drawable/cursor_edittext"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
@@ -121,15 +100,16 @@
         android:id="@+id/bottoneLogin"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="54dp"
         android:background="@drawable/mainbutton_bg"
         android:text="Login"
-        android:textColor="@color/white"
         android:textAllCaps="false"
+        android:textColor="@color/black"
         android:textSize="16sp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="@+id/editTextPasswordLogin"
-        app:layout_constraintStart_toStartOf="@+id/editTextPasswordLogin"
-        app:layout_constraintTop_toBottomOf="@+id/editTextPasswordLogin"
+        app:layout_constraintEnd_toEndOf="@+id/editTextUsernameLogin"
+        app:layout_constraintStart_toStartOf="@+id/editTextUsernameLogin"
+        app:layout_constraintTop_toBottomOf="@+id/constraintLayout"
         app:layout_constraintVertical_bias="0.25" />
 
     <TextView
@@ -142,5 +122,49 @@
         app:layout_constraintEnd_toEndOf="@+id/bottoneLogin"
         app:layout_constraintStart_toStartOf="@+id/bottoneLogin"
         app:layout_constraintTop_toBottomOf="@+id/bottoneLogin" />
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/constraintLayout"
+        android:layout_width="0dp"
+        android:layout_height="46dp"
+        android:layout_marginTop="7dp"
+        android:background="@color/opaco"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/editTextUsernameLogin"
+        app:layout_constraintStart_toStartOf="@+id/editTextUsernameLogin"
+        app:layout_constraintTop_toBottomOf="@+id/labelPasswordLogin"
+        app:layout_constraintVertical_bias="0.0">
+
+        <ImageView
+            android:id="@+id/occhioPasswordLogin"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="7dp"
+            android:layout_marginEnd="7dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toEndOf="@+id/editTextPasswordLogin"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/baseline_visibility_24" />
+
+        <EditText
+            android:id="@+id/editTextPasswordLogin"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:background="@null"
+            android:ems="10"
+            android:inputType="textPassword"
+            android:padding="10dp"
+            android:singleLine="true"
+            android:textColor="@color/black"
+            android:textCursorDrawable="@drawable/cursor_edittext"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/occhioPasswordLogin"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintHorizontal_chainStyle="packed"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

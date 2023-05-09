@@ -108,26 +108,6 @@
         app:layout_constraintTop_toBottomOf="@+id/labelUsernameRegistrazione"
         app:layout_constraintVertical_bias="0.0" />
 
-    <EditText
-        android:id="@+id/editTextPasswordRegistrazione"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="7dp"
-        android:layout_marginEnd="30dp"
-        android:background="@drawable/edittext_bg"
-        android:ems="10"
-        android:inputType="text|textPassword|textCapSentences"
-        android:padding="10dp"
-        android:singleLine="true"
-        android:textColor="#000000"
-        android:textCursorDrawable="@drawable/cursor_edittext"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="@+id/labelPasswordRegistrazione"
-        app:layout_constraintTop_toBottomOf="@+id/labelPasswordRegistrazione"
-        app:layout_constraintVertical_bias="0.0" />
-
     <TextView
         android:id="@+id/labelPasswordRegistrazione"
         android:layout_width="wrap_content"
@@ -209,43 +189,23 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/editTextPasswordRegistrazione"
+        app:layout_constraintTop_toBottomOf="@+id/constraintLayout2"
         app:layout_constraintVertical_bias="0.0" />
-
-    <EditText
-        android:id="@+id/editTextConfermaPasswordRegistrazione"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="7dp"
-        android:layout_marginEnd="30dp"
-        android:background="@drawable/edittext_bg"
-        android:ems="10"
-        android:inputType="text|textPassword|textCapSentences"
-        android:padding="10dp"
-        android:singleLine="true"
-        android:textColor="#000000"
-        android:textCursorDrawable="@drawable/cursor_edittext"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toStartOf="@+id/labelPasswordRegistrazione"
-        app:layout_constraintTop_toBottomOf="@+id/labelConfermaPasswordRegistrazione"
-        app:layout_constraintVertical_bias="0.018" />
 
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/bottoneAnnullaRegistrazione"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:background="@drawable/secondarybutton_bg"
+        android:paddingHorizontal="10dp"
         android:text="Torna indietro"
         android:textAllCaps="false"
-        android:textColor="#000000"
+        android:textColor="@color/white"
         android:textSize="16sp"
-        android:paddingHorizontal="10dp"
         app:layout_constraintBottom_toBottomOf="@+id/bottoneInizioQuestionario"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/constraintLayout3"
         app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="@+id/editTextConfermaPasswordRegistrazione"
+        app:layout_constraintStart_toStartOf="@+id/constraintLayout3"
         app:layout_constraintTop_toTopOf="@+id/bottoneInizioQuestionario"
         app:layout_constraintVertical_bias="0.0" />
 
@@ -254,16 +214,17 @@
         android:layout_width="wrap_content"
         android:layout_height="48dp"
         android:background="@drawable/mainbutton_bg"
+        android:paddingHorizontal="10dp"
         android:text="Procedi al questionario"
         android:textAllCaps="false"
-        android:textColor="#FFFFFF"
+        android:textColor="@color/black"
         android:textSize="16sp"
-        android:paddingHorizontal="10dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="@+id/editTextConfermaPasswordRegistrazione"
+        app:layout_constraintEnd_toEndOf="@+id/constraintLayout3"
         app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/editTextConfermaPasswordRegistrazione" />
+        app:layout_constraintStart_toStartOf="@+id/constraintLayout3"
+        app:layout_constraintTop_toBottomOf="@+id/constraintLayout3"
+        app:layout_constraintVertical_bias="0.507" />
 
     <EditText
         android:id="@+id/editTextDataNascita"
@@ -308,5 +269,92 @@
         app:layout_constraintStart_toEndOf="@+id/iconaCalendarioRegistrazione"
         app:layout_constraintTop_toTopOf="@+id/editTextDataNascita"
         app:layout_constraintVertical_bias="0.0" />
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/constraintLayout2"
+        android:layout_width="0dp"
+        android:layout_height="46dp"
+        android:layout_marginTop="7dp"
+        android:background="@color/opaco"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/editTextUsernameRegistrazione"
+        app:layout_constraintStart_toStartOf="@+id/editTextUsernameRegistrazione"
+        app:layout_constraintTop_toBottomOf="@+id/labelPasswordRegistrazione"
+        app:layout_constraintVertical_bias="0.0">
+
+        <EditText
+            android:id="@+id/editTextPasswordRegistrazione"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:background="@null"
+            android:ems="10"
+            android:inputType="text|textPassword|textCapSentences"
+            android:padding="10dp"
+            android:singleLine="true"
+            android:textColor="#000000"
+            android:textCursorDrawable="@drawable/cursor_edittext"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/occhioPasswordRegistrazione"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintHorizontal_chainStyle="packed"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <ImageView
+            android:id="@+id/occhioPasswordRegistrazione"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="7dp"
+            android:layout_marginEnd="7dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toEndOf="@+id/editTextPasswordRegistrazione"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/baseline_visibility_24" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/constraintLayout3"
+        android:layout_width="0dp"
+        android:layout_height="46dp"
+        android:layout_marginTop="7dp"
+        android:background="@color/opaco"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/constraintLayout2"
+        app:layout_constraintStart_toStartOf="@+id/constraintLayout2"
+        app:layout_constraintTop_toBottomOf="@+id/labelConfermaPasswordRegistrazione"
+        app:layout_constraintVertical_bias="0.0">
+
+        <EditText
+            android:id="@+id/editTextConfermaPasswordRegistrazione"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:background="@null"
+            android:ems="10"
+            android:inputType="text|textPassword|textCapSentences"
+            android:padding="10dp"
+            android:singleLine="true"
+            android:textColor="#000000"
+            android:textCursorDrawable="@drawable/cursor_edittext"
+            app:layout_constraintEnd_toStartOf="@+id/occhioConfermaPasswordRegistrazione"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintHorizontal_chainStyle="packed"
+            app:layout_constraintStart_toStartOf="parent"
+            tools:layout_editor_absoluteY="2dp" />
+
+        <ImageView
+            android:id="@+id/occhioConfermaPasswordRegistrazione"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="7dp"
+            android:layout_marginEnd="7dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toEndOf="@+id/editTextConfermaPasswordRegistrazione"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/baseline_visibility_24" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

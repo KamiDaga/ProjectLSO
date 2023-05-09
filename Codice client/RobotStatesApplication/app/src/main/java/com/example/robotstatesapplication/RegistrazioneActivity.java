@@ -6,10 +6,13 @@ import android.annotation.SuppressLint;
 import android.app.DatePickerDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.method.HideReturnsTransformationMethod;
+import android.text.method.PasswordTransformationMethod;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.DatePicker;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -24,6 +27,8 @@ public class RegistrazioneActivity extends AppCompatActivity {
     private DatePickerDialog datePicker;
     private TextView dateView;
     private Calendar calendario = Calendar.getInstance();
+    private ImageView bottoneOcchioPassword, bottoneOcchioConferma;
+    private EditText editTextPassword, editTextConferma;
 
     @SuppressLint("ResourceType")
     @Override
@@ -36,6 +41,10 @@ public class RegistrazioneActivity extends AppCompatActivity {
         bottoneIndietro = findViewById(R.id.bottoneAnnullaRegistrazione);
         bottoneCalendario = findViewById(R.id.iconaCalendarioRegistrazione);
         dateView = findViewById(R.id.editTextDataNascita);
+        bottoneOcchioPassword = findViewById(R.id.occhioPasswordRegistrazione);
+        bottoneOcchioConferma = findViewById(R.id.occhioConfermaPasswordRegistrazione);
+        editTextPassword = findViewById(R.id.editTextPasswordRegistrazione);
+        editTextConferma = findViewById(R.id.editTextConfermaPasswordRegistrazione);
 
         String[] sessi = new String[]{"M", "F"};
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(RegistrazioneActivity.this, R.layout.spinner_layout, sessi);
@@ -55,7 +64,7 @@ public class RegistrazioneActivity extends AppCompatActivity {
         bottoneAvanti.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent i = new Intent(RegistrazioneActivity.this, MainActivity.class);
+                Intent i = new Intent(RegistrazioneActivity.this, LoginActivity.class);
                 startActivity(i);
             }
         });
@@ -63,7 +72,7 @@ public class RegistrazioneActivity extends AppCompatActivity {
         bottoneIndietro.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent i = new Intent(RegistrazioneActivity.this, MainActivity.class);
+                Intent i = new Intent(RegistrazioneActivity.this, LoginActivity.class);
                 startActivity(i);
             }
         });
@@ -75,9 +84,39 @@ public class RegistrazioneActivity extends AppCompatActivity {
             }
         });
 
+        bottoneOcchioPassword.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mostraNascondiPassword(editTextPassword, bottoneOcchioPassword);
+            }
+        });
+
+        bottoneOcchioConferma.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mostraNascondiPassword(editTextConferma, bottoneOcchioConferma);
+            }
+        });
+
     }
+
+
 
     private void mostraData() {
         dateView.setText(new StringBuilder().append(calendario.get(Calendar.DAY_OF_MONTH)).append(" / ").append(calendario.get(Calendar.MONTH)).append(" / ").append(calendario.get(Calendar.YEAR)));
     }
+
+    private void mostraNascondiPassword(EditText et, ImageView iv) {
+
+        if (et.getTransformationMethod().equals(PasswordTransformationMethod.getInstance())) {
+            iv.setImageResource(R.drawable.baseline_visibility_off_24);
+            et.setTransformationMethod(HideReturnsTransformationMethod.getInstance());
+        }
+        else {
+            iv.setImageResource(R.drawable.baseline_visibility_24);
+            et.setTransformationMethod(PasswordTransformationMethod.getInstance());
+        }
+
+    }
+
 }
