@@ -57,11 +57,11 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 if (editTextPassword.getTransformationMethod().equals(PasswordTransformationMethod.getInstance())) {
-                    bottoneOcchioPassword.setImageResource(R.drawable.baseline_visibility_off_24);
+                    bottoneOcchioPassword.setImageResource(R.drawable.icona_occhio_sbarrato);
                     editTextPassword.setTransformationMethod(HideReturnsTransformationMethod.getInstance());
                 }
                 else {
-                    bottoneOcchioPassword.setImageResource(R.drawable.baseline_visibility_24);
+                    bottoneOcchioPassword.setImageResource(R.drawable.icona_occhio);
                     editTextPassword.setTransformationMethod(PasswordTransformationMethod.getInstance());
                 }
             }

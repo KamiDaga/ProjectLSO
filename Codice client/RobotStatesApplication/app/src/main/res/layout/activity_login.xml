@@ -146,7 +146,7 @@
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toEndOf="@+id/editTextPasswordLogin"
             app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/baseline_visibility_24" />
+            app:srcCompat="@drawable/icona_occhio" />
 
         <EditText
             android:id="@+id/editTextPasswordLogin"

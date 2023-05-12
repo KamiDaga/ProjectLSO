@@ -4,4 +4,5 @@
     <color name="white">#FFFFFFFF</color>
     <color name="green">#13FF00</color>
     <color name="opaco">#80FFFFFF</color>
+    <color name="bluette">#2B3881</color>
 </resources>

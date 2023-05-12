@@ -5,10 +5,10 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/background_drinks"
-    tools:context=".WelcomeActivity">
+    tools:context=".WaitingActivity">
 
     <TextView
-        android:id="@+id/promptWelcome"
+        android:id="@+id/promptWaiting"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Ciao, nome!"
@@ -22,25 +22,26 @@
         app:layout_constraintVertical_bias="0.15" />
 
     <TextView
-        android:id="@+id/promptWelcome2"
+        android:id="@+id/promptWaiting2"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="10dp"
+        android:layout_marginStart="50dp"
         android:layout_marginTop="7dp"
-        android:layout_marginEnd="10dp"
+        android:layout_marginEnd="50dp"
         android:fontFamily="sans-serif"
-        android:text="Sei pronto a bere un drink preparato da me?"
+        android:text="Al momento sono impegnato a servire altri clienti, ti va di attendere il tuo turno?"
+        android:textAlignment="center"
         android:textAllCaps="false"
         android:textColor="@color/black"
         android:textSize="20sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/promptWelcome"
+        app:layout_constraintTop_toBottomOf="@+id/promptWaiting"
         app:layout_constraintVertical_bias="0.0" />
 
     <ImageView
-        android:id="@+id/iconaRobotWelcome"
+        android:id="@+id/iconaRobotWaiting"
         android:layout_width="243dp"
         android:layout_height="241dp"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -50,24 +51,7 @@
         app:srcCompat="@drawable/roboticon" />
 
     <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/bottoneOrdinaWelcome"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:background="@drawable/mainbutton_bg"
-        android:drawableLeft="@drawable/drink_icon_smaller"
-        android:paddingRight="10dp"
-        android:text="Ordina"
-        android:textAllCaps="false"
-        android:textColor="@color/black"
-        android:textSize="16sp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/iconaRobotWelcome" />
-
-
-    <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/bottoneOutOfSightWelcome"
+        android:id="@+id/bottoneOutOfSightWaiting"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
@@ -83,4 +67,22 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.0" />
+
+    <RelativeLayout
+        android:id="@+id/loadingPanel"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="600dp"
+        android:gravity="center"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.53">
+
+        <ProgressBar
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:indeterminate="true" />
+    </RelativeLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

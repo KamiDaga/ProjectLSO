@@ -109,11 +109,11 @@ public class RegistrazioneActivity extends AppCompatActivity {
     private void mostraNascondiPassword(EditText et, ImageView iv) {
 
         if (et.getTransformationMethod().equals(PasswordTransformationMethod.getInstance())) {
-            iv.setImageResource(R.drawable.baseline_visibility_off_24);
+            iv.setImageResource(R.drawable.icona_occhio_sbarrato);
             et.setTransformationMethod(HideReturnsTransformationMethod.getInstance());
         }
         else {
-            iv.setImageResource(R.drawable.baseline_visibility_24);
+            iv.setImageResource(R.drawable.icona_occhio);
             et.setTransformationMethod(PasswordTransformationMethod.getInstance());
         }
 
