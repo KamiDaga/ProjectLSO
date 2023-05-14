@@ -11,9 +11,11 @@
         android:id="@+id/labelPasswordLogin"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textColor="@color/black"
         android:text="Password"
-        android:textSize="16sp"
+        android:textColor="#0E0D57"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:fontFamily="@font/varela"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="@+id/labelUsernameLogin"
         app:layout_constraintHorizontal_bias="0.0"
@@ -23,8 +25,8 @@
 
     <ImageView
         android:id="@+id/iconaLogin"
-        android:layout_width="117dp"
-        android:layout_height="118dp"
+        android:layout_width="188dp"
+        android:layout_height="173dp"
         android:layout_marginTop="60dp"
         android:src="@drawable/roboticon"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -35,45 +37,53 @@
 
     <TextView
         android:id="@+id/textViewPromptLogin1"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="283dp"
+        android:layout_height="57dp"
+        android:fontFamily="@font/varela"
+        android:gravity="center"
         android:text="Benvenuto!"
-        android:textColor="@color/black"
-        android:textSize="26sp"
+        android:textColor="#0E0D57"
+        android:textSize="34sp"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="@+id/iconaLogin"
+        app:layout_constraintHorizontal_bias="0.494"
         app:layout_constraintStart_toStartOf="@+id/iconaLogin"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.26" />
+        app:layout_constraintVertical_bias="0.285" />
 
     <TextView
         android:id="@+id/textViewPromptLogin2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:fontFamily="@font/varela"
         android:text="Effettua il login"
-        android:textSize="18sp"
-        android:textColor="@color/black"
+        android:textColor="#0E0D57"
+        android:textSize="24sp"
+        android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="@+id/textViewPromptLogin1"
+        app:layout_constraintHorizontal_bias="0.495"
         app:layout_constraintStart_toStartOf="@+id/textViewPromptLogin1"
         app:layout_constraintTop_toBottomOf="@+id/textViewPromptLogin1"
-        app:layout_constraintVertical_bias="0.0" />
+        app:layout_constraintVertical_bias="0.013" />
 
     <TextView
         android:id="@+id/labelUsernameLogin"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="40dp"
+        android:fontFamily="@font/varela"
         android:text="Username"
-        android:textSize="16sp"
-        android:textColor="@color/black"
+        android:textColor="#0E0D57"
+        android:textSize="20sp"
+        android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textViewPromptLogin2"
-        app:layout_constraintVertical_bias="0.100000024" />
+        app:layout_constraintVertical_bias="0.096" />
 
     <EditText
         android:id="@+id/editTextUsernameLogin"
@@ -84,6 +94,7 @@
         android:layout_marginEnd="47dp"
         android:background="@drawable/edittext_bg"
         android:ems="10"
+        android:fontFamily="@font/varela"
         android:inputType="text"
         android:padding="10dp"
         android:singleLine="true"
@@ -91,31 +102,35 @@
         android:textCursorDrawable="@drawable/cursor_edittext"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="@+id/labelUsernameLogin"
         app:layout_constraintTop_toBottomOf="@+id/labelUsernameLogin"
         app:layout_constraintVertical_bias="0.0" />
 
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/bottoneLogin"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="168dp"
+        android:layout_height="64dp"
         android:layout_marginTop="54dp"
         android:background="@drawable/mainbutton_bg"
-        android:text="Login"
+        android:fontFamily="@font/varela"
+        android:text="LOGIN"
         android:textAllCaps="false"
-        android:textColor="@color/black"
-        android:textSize="16sp"
+        android:textColor="@color/white"
+        android:textSize="20sp"
+        android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="@+id/editTextUsernameLogin"
+        app:layout_constraintHorizontal_bias="0.497"
         app:layout_constraintStart_toStartOf="@+id/editTextUsernameLogin"
         app:layout_constraintTop_toBottomOf="@+id/constraintLayout"
-        app:layout_constraintVertical_bias="0.25" />
+        app:layout_constraintVertical_bias="0.052" />
 
     <TextView
         android:id="@+id/textViewInizioRegistrazione"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:fontFamily="@font/varela"
         android:text="Non hai un account? Registrati qui"
         android:textColor="@color/black"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -150,6 +165,7 @@
 
         <EditText
             android:id="@+id/editTextPasswordLogin"
+            android:fontFamily="@font/varela"
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:background="@null"
