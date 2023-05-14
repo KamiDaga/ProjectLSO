@@ -5,14 +5,13 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/background_drinks"
-    tools:context=".OutOfSightActivity">
+    tools:context=".Views.OutOfSightActivity">
 
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/bottoneTornaAllApp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:background="@color/bluette"
-        android:backgroundTint="@color/bluette"
         android:text="Riavvicinati"
         android:textAllCaps="false"
         android:textColor="@color/white"

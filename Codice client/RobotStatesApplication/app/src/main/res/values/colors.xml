@@ -3,6 +3,9 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
     <color name="green">#13FF00</color>
-    <color name="opaco">#80FFFFFF</color>
+    <color name="opaco">#B3FFFFFF</color>
     <color name="bluette">#2B3881</color>
+    <color name="verdolino_chiaro">#b6d7a8</color>
+    <color name="verdolino_scuro">#274e13</color>
+    <color name="blu_scuro">#0E0D57</color>
 </resources>

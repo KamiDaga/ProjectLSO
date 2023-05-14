@@ -1,11 +1,15 @@
-package com.example.robotstatesapplication;
+package com.example.robotstatesapplication.Views;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.Button;
+
+import com.example.robotstatesapplication.R;
 
 public class WelcomeActivity extends AppCompatActivity {
 
@@ -15,6 +19,10 @@ public class WelcomeActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        requestWindowFeature(Window.FEATURE_NO_TITLE);
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,WindowManager.LayoutParams.FLAG_FULLSCREEN);
+
         setContentView(R.layout.activity_welcome);
 
         bottoneOutOfSight = findViewById(R.id.bottoneOutOfSightWelcome);
@@ -32,7 +40,7 @@ public class WelcomeActivity extends AppCompatActivity {
         bottoneOrdina.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent i = new Intent(WelcomeActivity.this, WaitingActivity.class);
+                Intent i = new Intent(WelcomeActivity.this, ServingActivity.class);
                 startActivity(i);
             }
         });

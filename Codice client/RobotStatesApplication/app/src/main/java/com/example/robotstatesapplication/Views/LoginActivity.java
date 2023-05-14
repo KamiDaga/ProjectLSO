@@ -1,4 +1,4 @@
-package com.example.robotstatesapplication;
+package com.example.robotstatesapplication.Views;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -9,10 +9,14 @@ import android.text.SpannableStringBuilder;
 import android.text.method.HideReturnsTransformationMethod;
 import android.text.method.PasswordTransformationMethod;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.example.robotstatesapplication.R;
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -25,7 +29,12 @@ public class LoginActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        requestWindowFeature(Window.FEATURE_NO_TITLE);
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,WindowManager.LayoutParams.FLAG_FULLSCREEN);
+
         setContentView(R.layout.activity_login);
+
 
         textViewRegistrazione = findViewById(R.id.textViewInizioRegistrazione);
         bottoneRegistrazione = findViewById(R.id.textViewInizioRegistrazione);

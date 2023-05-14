@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/background_drinks"
-    tools:context=".WelcomeActivity">
+    tools:context=".Views.WelcomeActivity">
 
     <TextView
         android:id="@+id/promptWelcome"
@@ -55,10 +55,12 @@
         android:layout_height="wrap_content"
         android:background="@drawable/mainbutton_bg"
         android:drawableLeft="@drawable/drink_icon_smaller"
-        android:paddingRight="10dp"
-        android:text="Ordina"
+        android:paddingRight="40dp"
+        android:paddingLeft="30dp"
+        android:paddingVertical="10dp"
+        android:text="ORDINA"
         android:textAllCaps="false"
-        android:textColor="@color/black"
+        android:textColor="@color/white"
         android:textSize="16sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

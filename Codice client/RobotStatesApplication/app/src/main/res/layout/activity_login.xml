@@ -5,23 +5,24 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/background_drinks"
-    tools:context=".LoginActivity">
+    tools:context=".Views.LoginActivity">
 
     <TextView
         android:id="@+id/labelPasswordLogin"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="14dp"
+        android:fontFamily="@font/varela"
         android:text="Password"
         android:textColor="#0E0D57"
         android:textSize="20sp"
         android:textStyle="bold"
-        android:fontFamily="@font/varela"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="@+id/labelUsernameLogin"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="@+id/labelUsernameLogin"
-        app:layout_constraintTop_toBottomOf="@+id/textViewPromptLogin2"
-        app:layout_constraintVertical_bias="0.311" />
+        app:layout_constraintTop_toBottomOf="@+id/editTextUsernameLogin"
+        app:layout_constraintVertical_bias="0.0" />
 
     <ImageView
         android:id="@+id/iconaLogin"
@@ -49,8 +50,8 @@
         app:layout_constraintEnd_toEndOf="@+id/iconaLogin"
         app:layout_constraintHorizontal_bias="0.494"
         app:layout_constraintStart_toStartOf="@+id/iconaLogin"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.285" />
+        app:layout_constraintTop_toBottomOf="@+id/iconaLogin"
+        app:layout_constraintVertical_bias="0.0" />
 
     <TextView
         android:id="@+id/textViewPromptLogin2"
@@ -66,7 +67,7 @@
         app:layout_constraintHorizontal_bias="0.495"
         app:layout_constraintStart_toStartOf="@+id/textViewPromptLogin1"
         app:layout_constraintTop_toBottomOf="@+id/textViewPromptLogin1"
-        app:layout_constraintVertical_bias="0.013" />
+        app:layout_constraintVertical_bias="0.0" />
 
     <TextView
         android:id="@+id/labelUsernameLogin"
@@ -130,9 +131,12 @@
         android:id="@+id/textViewInizioRegistrazione"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:background="@drawable/edittext_bg"
         android:fontFamily="@font/varela"
         android:text="Non hai un account? Registrati qui"
-        android:textColor="@color/black"
+        android:paddingHorizontal="5dp"
+        android:textColor="@color/blu_scuro"
+        android:textSize="16sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="@+id/bottoneLogin"
         app:layout_constraintStart_toStartOf="@+id/bottoneLogin"
@@ -165,11 +169,11 @@
 
         <EditText
             android:id="@+id/editTextPasswordLogin"
-            android:fontFamily="@font/varela"
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:background="@null"
             android:ems="10"
+            android:fontFamily="@font/varela"
             android:inputType="textPassword"
             android:padding="10dp"
             android:singleLine="true"
