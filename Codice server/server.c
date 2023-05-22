@@ -7,7 +7,10 @@
 #include <arpa/inet.h>
 #include <string.h>
 #include <errno.h>
+#include <mysql/mysql.h>
 
+//Struttura per il db
+MYSQL *con;
 //mutex per la lista
 pthread_mutex_t mutexQueue;
 
@@ -310,7 +313,157 @@ void welcome(void* client)
     pnodet* clientconn = (pnodet*) client;
     char address[INET_ADDRSTRLEN];
     inet_ntop(AF_INET,&clientconn->indirizzoc.sin_addr,address,INET_ADDRSTRLEN);
-    printf("Benvenuto a %s\n",address);
+    printf("Benvenuto a %s\nIn attesa delle credenziali per effettuare il login.\n",address);
+    char risposta[200];
+    char state[20];
+    memset(risposta,0,sizeof(risposta));
+    int logged = 0;
+    //finche non si effettua il login
+    while(logged == 0)
+    {      
+        int scorririsposta = 0;
+        // int credenziali = 0;
+        // printf("%d\n",credenziali);
+        //Se si disconnette copiamo semplicemente quittiamo
+        if(read(clientconn->socketc,risposta,sizeof(risposta))==0)
+            strcpy(risposta,"gone");
+        memset(state,0,sizeof(state));
+        for(int i = 0; risposta[scorririsposta]!= '\0' && risposta[scorririsposta]!= '-'; i++)
+        {
+            state[i] = risposta[scorririsposta];
+            scorririsposta++;
+        }
+        scorririsposta++;
+
+        //Registrazione
+        if(strcmp(state,"registerer")== 0)
+        {
+            // Risposta conterra' qualcosa del tipo USERNAME-PASSWORD-ANS1-ANS2-ANS3
+            char username[21];
+            char password[13];
+            char ans1[4];
+            char ans2[4];
+            char ans3[4];
+            memset(username,0,sizeof(username));
+            memset(password,0,sizeof(password));
+            memset(ans1,0,sizeof(ans1));
+            memset(ans2,0,sizeof(ans2));
+            memset(ans3,0,sizeof(ans3));
+            char query[300];
+
+            memset(query,0,sizeof(query));
+            
+
+            //Copio i valori nelle stringhe
+            for(int i = 0; risposta[scorririsposta]!='-'; i++)
+            {
+                username[i] = risposta[scorririsposta];
+                scorririsposta++;
+            }
+            printf("%s\n",username);
+            scorririsposta++;
+            for(int i = 0; risposta[scorririsposta]!='-'; i++)
+            {
+                password[i] = risposta[scorririsposta];
+                scorririsposta++;
+            }
+            scorririsposta++;
+            for(int i = 0; risposta[scorririsposta]!='-'; i++)
+            {
+                ans1[i] = risposta[scorririsposta];
+                scorririsposta++;
+            }
+            scorririsposta++;
+            for(int i = 0; risposta[scorririsposta]!='-'; i++)
+            {
+                ans2[i] = risposta[scorririsposta];
+                scorririsposta++;
+            }
+            scorririsposta++;
+            for(int i = 0; risposta[scorririsposta]!='\0'; i++)
+            {
+                ans3[i] = risposta[scorririsposta];
+                scorririsposta++;
+            }
+            scorririsposta++;
+            
+            sprintf(query,"SELECT * FROM Utenti WHERE username = '%s'",username);
+            mysql_query(con,query);
+            MYSQL_RES *result = mysql_store_result(con);
+            if(mysql_num_rows(result)!=0)
+            {
+                printf("Ho fatto la query\n");
+                memset(risposta,0,sizeof(risposta));
+                strcpy(risposta,"Esiste gia' un utente con questo nome!");
+                send(clientconn->socketc, risposta,strlen(risposta),0);
+            }
+            else
+            {
+                memset(query,0,sizeof(query));
+                sprintf(query,"INSERT INTO Utenti(username,password,answer1,answer2,answer3) VALUES ('%s','%s','%s','%s','%s');",username,password,ans1,ans2,ans3);
+                mysql_query(con,query);
+                memset(risposta,0,sizeof(risposta));
+                strcpy(risposta,"Utente registrato con successo! Effettua il login.\n");
+                send(clientconn->socketc, risposta,strlen(risposta),0);
+            }
+
+        }    
+        else if(strcmp(risposta,"gone") == 0)
+        {
+            logged = 1;
+        }
+        else//Se siamo in login, la risposta sara del tipo USERNAME-PASSWORD
+        {
+            char username[21];
+            char password[13];
+            char query[300];
+
+            memset(username,0,sizeof(username));
+            memset(password,0,sizeof(password));
+            memset(query,0,sizeof(query));
+            //Copio i valori nelle stringhe
+            printf("%c\n",risposta[scorririsposta]);
+            for(int i = 0; risposta[scorririsposta]!='-'; i++)
+            {
+                username[i] = risposta[scorririsposta];
+                scorririsposta++;
+            }
+            printf("%s\n",username);
+            scorririsposta++;
+            for(int i = 0; risposta[scorririsposta]!='\0'; i++)
+            {
+                password[i] = risposta[scorririsposta];
+                scorririsposta++;
+            }
+            
+            sprintf(query,"SELECT password FROM Utenti WHERE username = '%s'",username);
+            
+            mysql_query(con,query);
+
+            MYSQL_RES *result = mysql_store_result(con);
+            //Se l'utente non esiste
+            if(mysql_num_rows(result)==0)
+            {
+                memset(risposta,0,sizeof(risposta));
+                strcpy(risposta,"Utente non trovato! Riprova.");
+                send(clientconn->socketc, risposta,strlen(risposta),0);
+            }
+            else 
+            {
+                MYSQL_ROW pass = mysql_fetch_row(result);
+               
+                if(strcmp(pass[0],password)==0)
+                {
+                    logged = 1;
+                    memset(risposta,0,sizeof(risposta));
+                    sprintf(risposta,"Benvenuto, %s!", username);
+                    send(clientconn->socketc, risposta,strlen(risposta),0);
+                }
+
+            }
+        }
+    
+    }
     pthread_mutex_lock(&mutexQueue);
     clientconn->state = "WAITING";
     pthread_mutex_unlock(&mutexQueue);
@@ -330,19 +483,19 @@ void welcome(void* client)
     pthread_exit(0);
 }
 
-void outofsight(void* tid)
-{
-    pthread_t id = *(pthread_t*) tid;
-    printf("Monitoro il thread %d\n", id);
-    pnodet* nodo;
-    pthread_mutex_lock(&mutexQueue);
-    nodo = find(id);
-    pthread_mutex_unlock(&mutexQueue);
-    while(1)
-    {
-        //accepr
-    }
-}
+//void outofsight(void* tid)
+// {
+//     pthread_t id = *(pthread_t*) tid;
+//     printf("Monitoro il thread %d\n", id);
+//     pnodet* nodo;
+//     pthread_mutex_lock(&mutexQueue);
+//     nodo = find(id);
+//     pthread_mutex_unlock(&mutexQueue);
+//     while(1)
+//     {
+//         //accepr
+//     }
+// }
 
 //////////////////////////////
 
@@ -400,11 +553,11 @@ void checkwaiting()
 void checklist()
 {
     pthread_mutex_lock(&mutexQueue);
-    printlist();
+    //printlist();
     checkfarewelling();
     removeDisconnected();
     checkwaiting();
-    printlist();
+    //printlist();
     pthread_mutex_unlock(&mutexQueue);
 }
 
@@ -427,10 +580,21 @@ void nada()
 
 int main()
 {
-    // if((queuemanager = fork()) == 0)
-    // {
-    //     managequeue();
-    // }
+    //Connessione al db
+    con = mysql_init(NULL);
+
+    if(con == NULL)
+    {
+        perror("Errore durante la creazione dell'istanza mysql\n");
+        exit(1);
+    }
+    //Scherzavo questa e' la vera connessione
+    if(mysql_real_connect(con,NULL,NULL,"","robottino",0,NULL,0)==NULL)
+    {
+        fprintf(stderr,"Errore durante la connessione al db:%s\n",mysql_error(con));
+        exit(1);
+    }
+
     signal(SIGPIPE,nada);
     pthread_mutex_init(&mutexQueue,NULL);
     pnodet* node = NULL;    
@@ -457,21 +621,13 @@ int main()
     if(pthread_create(&queuemanager,NULL,managequeue, NULL)!=0)
     {
         perror("Errore tread delle queue");
+        exit(1);
     };
         
     while(1)
     {
-        // if(head == NULL)
-        // {
         node = (pnodet*)malloc(sizeof(pnodet));
-            // head->next = NULL;
-        // }
-        // else
-        // {
-        //     pnodet* nodo = (pnodet*)malloc(sizeof(pnodet));
-        //     nodo->next = head;
-        //     head = nodo;
-        // }
+       
         socklen_t length = sizeof(node->indirizzoc);
         node->socketc = accept(sockets,&(node->indirizzoc), &length);
         if(node->socketc <0)
@@ -479,8 +635,6 @@ int main()
             printf("Errore in accept\n");
             perror("Info: ");
         }
-        // if((node->id = fork())==0)
-        // {
         node->state = "WELCOME";
         printf("%s\n",node->state);
         pthread_mutex_lock(&mutexQueue);
@@ -488,9 +642,6 @@ int main()
         pthread_create(&node->id,NULL,welcome,(void*)node);
         pthread_detach(node->id);
         pthread_mutex_unlock(&mutexQueue);
-
-        
-        // }
     }
     
 }
