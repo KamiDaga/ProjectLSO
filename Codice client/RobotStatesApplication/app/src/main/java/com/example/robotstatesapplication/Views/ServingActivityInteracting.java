@@ -4,11 +4,13 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewTreeObserver;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.TextView;
 
@@ -18,9 +20,8 @@ import com.example.robotstatesapplication.R;
 import com.example.robotstatesapplication.Utils.ListaMessaggiAdapter;
 
 import java.util.ArrayList;
-import java.util.concurrent.TimeUnit;
 
-public class ServingActivity extends AppCompatActivity {
+public class ServingActivityInteracting extends AppCompatActivity {
 
     private RecyclerView rvChat;
     private ArrayList<Messaggio> chat = new ArrayList<>();
@@ -30,22 +31,28 @@ public class ServingActivity extends AppCompatActivity {
     private View viewRoot;
     private TextView tvContatore;
     private int tempoDrink;
+    private Button bottoneOutOfSight;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_serving);
+
+        requestWindowFeature(Window.FEATURE_NO_TITLE);
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,WindowManager.LayoutParams.FLAG_FULLSCREEN);
+
+        setContentView(R.layout.activity_serving_interacting);
 
         rvChat = findViewById(R.id.recyclerViewChat);
         bottonePositivo = findViewById(R.id.bottoneRispostaPositivaChat);
         bottoneNegativo = findViewById(R.id.bottoneRispostaNegativaChat);
         viewRoot = findViewById(R.id.rootServing);
         tvContatore = findViewById(R.id.contatoreServingInteracting);
+        bottoneOutOfSight = findViewById(R.id.bottoneOutOfSightServingInteracting);
 
         chat.add(new Messaggio("Ciao, sono il Robot", UtenteEnum.ROBOT));
         attivaGestioneContatore();
 
-        adapterChat = new ListaMessaggiAdapter(ServingActivity.this, chat);
+        adapterChat = new ListaMessaggiAdapter(ServingActivityInteracting.this, chat);
         rvChat.setAdapter(adapterChat);
         LinearLayoutManager manager = new LinearLayoutManager(this);
         rvChat.setLayoutManager(manager);
@@ -97,6 +104,14 @@ public class ServingActivity extends AppCompatActivity {
             }
         });
 
+        bottoneOutOfSight.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i = new Intent(ServingActivityInteracting.this, OutOfSightActivity.class);
+                startActivity(i);
+            }
+        });
+
     }
 
     private void attivaGestioneContatore() {
@@ -106,11 +121,11 @@ public class ServingActivity extends AppCompatActivity {
         Thread threadContatore = new Thread(new Runnable() {
             @Override
             public void run() {
-                while (tempoDrink > 0) {
+                while (tempoDrink > 0 && !Thread.interrupted()) {
                     try {
                         Thread.sleep(1000);
                     } catch (InterruptedException e) {
-                        throw new RuntimeException(e);
+                        return;
                     }
                     tempoDrink--;
                     handlerContatore.post(new Runnable() {

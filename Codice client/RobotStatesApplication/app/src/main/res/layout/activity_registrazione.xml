@@ -7,6 +7,22 @@
     android:background="@drawable/background_drinks"
     tools:context=".Views.RegistrazioneActivity">
 
+    <ProgressBar
+        android:id="@+id/progressBar"
+        style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        android:max="4"
+        android:progress="1"
+        android:progressTint="@color/blu_scuro"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0" />
+
     <TextView
         android:id="@+id/labelSessoRegistrazione"
         android:layout_width="wrap_content"
@@ -262,7 +278,7 @@
         android:id="@+id/spinnerSessoRegistrazione"
         android:layout_width="103dp"
         android:layout_height="0dp"
-        android:backgroundTint="@color/black"
+        android:backgroundTint="@color/blu_scuro"
         app:layout_constraintBottom_toBottomOf="@+id/editTextDataNascita"
         app:layout_constraintEnd_toEndOf="@+id/editTextCognomeRegistrazione"
         app:layout_constraintHorizontal_bias="1.0"

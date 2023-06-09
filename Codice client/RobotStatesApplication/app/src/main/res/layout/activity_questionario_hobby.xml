@@ -4,6 +4,236 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".QuestionarioHobbyActivity">
+    android:background="@drawable/background_drinks"
+    tools:context=".Views.QuestionarioHobbyActivity">
 
+    <TextView
+        android:id="@+id/promptHobby2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="30dp"
+        android:layout_marginEnd="30dp"
+        android:text="Scegli i tuoi 3 hobby preferiti tra questi:"
+        android:textColor="@color/white"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@+id/tableLayout"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/promptQuestionarioHobby"
+        app:layout_constraintVertical_bias="0.75" />
+
+    <TextView
+        android:id="@+id/promptQuestionarioHobby"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="30dp"
+        android:text="Crea un nuovo account"
+        android:textColor="@color/blu_scuro"
+        android:textSize="26sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.496"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0" />
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/bottoneFineQuestionario"
+        android:layout_width="wrap_content"
+        android:layout_height="48dp"
+        android:layout_marginStart="70dp"
+        android:background="@drawable/mainbutton_bg"
+        android:paddingHorizontal="10dp"
+        android:text="Fine"
+        android:textAllCaps="false"
+        android:textColor="@color/white"
+        android:textSize="16sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/bottoneAnnullaQuestionarioHobby"
+        app:layout_constraintTop_toBottomOf="@+id/tableLayout" />
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/bottoneAnnullaQuestionarioHobby"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="70dp"
+        android:background="@drawable/secondarybutton_bg"
+        android:paddingHorizontal="10dp"
+        android:text="Torna indietro"
+        android:textAllCaps="false"
+        android:textColor="@color/blu_scuro"
+        android:textSize="16sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/bottoneFineQuestionario"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintHorizontal_chainStyle="packed"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tableLayout"
+        app:layout_constraintVertical_bias="0.507" />
+
+    <ProgressBar
+        android:id="@+id/progressBar3"
+        style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        android:max="4"
+        android:progress="3"
+        android:progressTint="@color/blu_scuro"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0" />
+
+    <TableLayout
+        android:id="@+id/tableLayout"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="80dp"
+        android:layout_marginEnd="23dp"
+        android:layout_marginBottom="160dp"
+        android:orientation="horizontal"
+        android:weightSum="3"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintDimensionRatio="1:1.2"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/promptQuestionarioHobby">
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:stretchColumns="0,1,2"
+            android:weightSum="3">
+
+            <ImageView
+                android:id="@+id/iconaHobby1"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:adjustViewBounds="true"
+                android:maxWidth="24dp"
+                android:maxHeight="24dp"
+                android:scaleType="fitXY"
+                android:src="@drawable/hobbysport" />
+
+            <ImageView
+                android:id="@+id/iconaHobby2"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_marginHorizontal="5dp"
+                android:layout_weight="1"
+                android:adjustViewBounds="true"
+                android:maxWidth="24dp"
+                android:maxHeight="24dp"
+                android:scaleType="fitXY"
+                android:src="@drawable/hobbyfilm" />
+
+            <ImageView
+                android:id="@+id/iconaHobby3"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:adjustViewBounds="true"
+                android:maxWidth="24dp"
+                android:maxHeight="24dp"
+                android:scaleType="fitXY"
+                android:src="@drawable/hobbygiardinaggio" />
+
+        </TableRow>
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_marginVertical="5dp"
+            android:layout_weight="1"
+            android:stretchColumns="0,1,2"
+            android:weightSum="3">
+
+            <ImageView
+                android:id="@+id/iconaHobby4"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:adjustViewBounds="true"
+                android:maxWidth="24dp"
+                android:maxHeight="24dp"
+                android:scaleType="fitXY"
+                android:src="@drawable/hobbymusica" />
+
+            <ImageView
+                android:id="@+id/iconaHobby5"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_marginHorizontal="5dp"
+                android:layout_weight="1"
+                android:adjustViewBounds="true"
+                android:maxWidth="24dp"
+                android:maxHeight="24dp"
+                android:scaleType="fitXY"
+                android:src="@drawable/hobbyvideogiochi" />
+
+            <ImageView
+                android:id="@+id/iconaHobby6"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:adjustViewBounds="true"
+                android:maxWidth="24dp"
+                android:maxHeight="24dp"
+                android:scaleType="fitXY"
+                android:src="@drawable/hobbycucina" />
+        </TableRow>
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:stretchColumns="0,1,2"
+            android:weightSum="3">
+
+            <ImageView
+                android:id="@+id/iconaHobby7"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:adjustViewBounds="true"
+                android:maxWidth="24dp"
+                android:maxHeight="24dp"
+                android:scaleType="fitXY"
+                android:src="@drawable/hobbyteatro" />
+
+            <ImageView
+                android:id="@+id/iconaHobby8"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_marginHorizontal="5dp"
+                android:layout_weight="1"
+                android:adjustViewBounds="true"
+                android:maxWidth="24dp"
+                android:maxHeight="24dp"
+                android:scaleType="fitXY"
+                android:src="@drawable/hobbyarte" />
+
+            <ImageView
+                android:id="@+id/iconaHobby9"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:adjustViewBounds="true"
+                android:maxWidth="24dp"
+                android:maxHeight="24dp"
+                android:scaleType="fitXY"
+                android:src="@drawable/hobbylettura" />
+        </TableRow>
+
+    </TableLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

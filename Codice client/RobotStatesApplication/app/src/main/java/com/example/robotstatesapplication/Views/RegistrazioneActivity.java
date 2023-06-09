@@ -72,7 +72,7 @@ public class RegistrazioneActivity extends AppCompatActivity {
         bottoneAvanti.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent i = new Intent(RegistrazioneActivity.this, LoginActivity.class);
+                Intent i = new Intent(RegistrazioneActivity.this, QuestionarioDrinkActivity.class);
                 startActivity(i);
             }
         });
@@ -80,8 +80,7 @@ public class RegistrazioneActivity extends AppCompatActivity {
         bottoneIndietro.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent i = new Intent(RegistrazioneActivity.this, LoginActivity.class);
-                startActivity(i);
+                finish();
             }
         });
 

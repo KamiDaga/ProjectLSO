@@ -4,6 +4,113 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".SuggestedOrderingActivity">
+    android:background="@drawable/background_drinks"
+    tools:context=".Views.SuggestedOrderingActivity">
 
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/bottoneConfermaDrinkSuggerito"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/mainbutton_bg"
+        android:paddingHorizontal="30dp"
+        android:paddingVertical="10dp"
+        android:text="OK!"
+        android:textAllCaps="false"
+        android:textColor="@color/white"
+        android:textSize="16sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/bottoneAnnullaDrinkSuggerito"
+        app:layout_constraintTop_toBottomOf="@+id/nomeDrinkSuggerito" />
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/bottoneOutOfSightOrderingSuggested"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:layout_marginEnd="20dp"
+        android:backgroundTint="@color/bluette"
+        android:drawableStart="@drawable/icona_uscita"
+        android:text="Allontanati"
+        android:textAllCaps="false"
+        android:textColor="#FFFFFF"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0" />
+
+    <TextView
+        android:id="@+id/promptOrderingSuggested"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:text="Cosa ti va di bere?"
+        android:textColor="@color/blu_scuro"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/bottoneOutOfSightOrderingSuggested"
+        app:layout_constraintVertical_bias="0.0" />
+
+    <TextView
+        android:id="@+id/promptOrderingSuggested2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="10dp"
+        android:text="Che ne diresti di un..."
+        android:textColor="@color/blu_scuro"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@+id/imageView6"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/promptOrderingSuggested"
+        app:layout_constraintVertical_bias="1.0" />
+
+    <ImageView
+        android:id="@+id/imageView6"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/drink_icon" />
+
+    <TextView
+        android:id="@+id/nomeDrinkSuggerito"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:text="NOME DRINK"
+        android:textColor="@color/blu_scuro"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/imageView6"
+        app:layout_constraintVertical_bias="0.0" />
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/bottoneAnnullaDrinkSuggerito"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/secondarybutton_bg"
+        android:paddingHorizontal="30dp"
+        android:paddingVertical="10dp"
+        android:text="Non mi va!"
+        android:textAllCaps="true"
+        android:textColor="@color/blu_scuro"
+        app:layout_constraintBottom_toBottomOf="@+id/bottoneConfermaDrinkSuggerito"
+        app:layout_constraintEnd_toStartOf="@+id/bottoneConfermaDrinkSuggerito"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintHorizontal_chainStyle="spread"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/bottoneConfermaDrinkSuggerito" />
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools" >
+    xmlns:tools="http://schemas.android.com/tools">
 
     <application
         android:allowBackup="true"
@@ -11,9 +11,24 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.RobotStatesApplication"
-        tools:targetApi="31" >
+        tools:targetApi="31">
         <activity
-            android:name=".Views.ServingActivity"
+            android:name=".Views.OrderingActivity"
+            android:exported="false" />
+        <activity
+            android:name=".Views.SuggestedOrderingActivity"
+            android:exported="false" />
+        <activity
+            android:name=".Views.QuestionarioHobbyActivity"
+            android:exported="false" />
+        <activity
+            android:name=".Views.QuestionarioDrinkActivity"
+            android:exported="false" />
+        <activity
+            android:name=".Views.ServingActivityInteracting"
+            android:exported="false" />
+        <activity
+            android:name=".Views.ServingActivityNotInteracting"
             android:exported="false" />
         <activity
             android:name=".Views.WaitingActivity"
@@ -29,7 +44,7 @@
             android:exported="false" />
         <activity
             android:name=".Views.LoginActivity"
-            android:exported="true" >
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

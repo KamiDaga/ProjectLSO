@@ -4,6 +4,236 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".RegistrazioneQuestionarioDrinkActivity">
+    android:background="@drawable/background_drinks"
+    tools:context=".Views.QuestionarioDrinkActivity">
 
+    <TextView
+        android:id="@+id/promptQuestionarioDrink"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="30dp"
+        android:text="Crea un nuovo account"
+        android:textColor="@color/blu_scuro"
+        android:textSize="26sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.496"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0" />
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/bottoneInizioQuestionarioHobby"
+        android:layout_width="wrap_content"
+        android:layout_height="48dp"
+        android:layout_marginStart="70dp"
+        android:background="@drawable/mainbutton_bg"
+        android:paddingHorizontal="10dp"
+        android:text="Avanti"
+        android:textAllCaps="false"
+        android:textColor="@color/white"
+        android:textSize="16sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/bottoneAnnullaQuestionarioDrink"
+        app:layout_constraintTop_toBottomOf="@+id/tableLayout" />
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/bottoneAnnullaQuestionarioDrink"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="70dp"
+        android:background="@drawable/secondarybutton_bg"
+        android:paddingHorizontal="10dp"
+        android:text="Torna indietro"
+        android:textAllCaps="false"
+        android:textColor="@color/blu_scuro"
+        android:textSize="16sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/bottoneInizioQuestionarioHobby"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintHorizontal_chainStyle="packed"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tableLayout"
+        app:layout_constraintVertical_bias="0.507" />
+
+    <ProgressBar
+        android:id="@+id/progressBar2"
+        style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        android:max="4"
+        android:progress="2"
+        android:progressTint="@color/blu_scuro"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0" />
+
+    <TableLayout
+        android:id="@+id/tableLayout"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="80dp"
+        android:layout_marginEnd="23dp"
+        android:layout_marginBottom="160dp"
+        android:orientation="horizontal"
+        android:weightSum="3"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintDimensionRatio="1:1.2"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/promptQuestionarioDrink">
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:stretchColumns="0,1,2"
+            android:weightSum="3">
+
+            <ImageView
+                android:id="@+id/iconaDrink1"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:adjustViewBounds="true"
+                android:maxWidth="24dp"
+                android:maxHeight="24dp"
+                android:scaleType="fitXY"
+                android:src="@drawable/drinkpinacolada" />
+
+            <ImageView
+                android:id="@+id/iconaDrink2"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_marginHorizontal="5dp"
+                android:layout_weight="1"
+                android:adjustViewBounds="true"
+                android:maxWidth="24dp"
+                android:maxHeight="24dp"
+                android:scaleType="fitXY"
+                android:src="@drawable/drinkmudslide" />
+
+            <ImageView
+                android:id="@+id/iconaDrink3"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:adjustViewBounds="true"
+                android:maxWidth="24dp"
+                android:maxHeight="24dp"
+                android:scaleType="fitXY"
+                android:src="@drawable/drinkespress75" />
+
+        </TableRow>
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_marginVertical="5dp"
+            android:layout_weight="1"
+            android:stretchColumns="0,1,2"
+            android:weightSum="3">
+
+            <ImageView
+                android:id="@+id/iconaDrink4"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:adjustViewBounds="true"
+                android:maxWidth="24dp"
+                android:maxHeight="24dp"
+                android:scaleType="fitXY"
+                android:src="@drawable/drinkmanhattan" />
+
+            <ImageView
+                android:id="@+id/iconaDrink5"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_marginHorizontal="5dp"
+                android:layout_weight="1"
+                android:adjustViewBounds="true"
+                android:maxWidth="24dp"
+                android:maxHeight="24dp"
+                android:scaleType="fitXY"
+                android:src="@drawable/drinknegroski" />
+
+            <ImageView
+                android:id="@+id/iconaDrink6"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:adjustViewBounds="true"
+                android:maxWidth="24dp"
+                android:maxHeight="24dp"
+                android:scaleType="fitXY"
+                android:src="@drawable/drinkmartini" />
+        </TableRow>
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:stretchColumns="0,1,2"
+            android:weightSum="3">
+
+            <ImageView
+                android:id="@+id/iconaDrink7"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:adjustViewBounds="true"
+                android:maxWidth="24dp"
+                android:maxHeight="24dp"
+                android:scaleType="fitXY"
+                android:src="@drawable/drinkmojito" />
+
+            <ImageView
+                android:id="@+id/iconaDrink8"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_marginHorizontal="5dp"
+                android:layout_weight="1"
+                android:adjustViewBounds="true"
+                android:maxWidth="24dp"
+                android:maxHeight="24dp"
+                android:scaleType="fitXY"
+                android:src="@drawable/drinkcosmopolitan" />
+
+            <ImageView
+                android:id="@+id/iconaDrink9"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:adjustViewBounds="true"
+                android:maxWidth="24dp"
+                android:maxHeight="24dp"
+                android:scaleType="fitXY"
+                android:src="@drawable/drinkfizz" />
+        </TableRow>
+
+    </TableLayout>
+
+    <TextView
+        android:id="@+id/promptDrink2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="30dp"
+        android:layout_marginEnd="30dp"
+        android:text="Scegli i tuoi 3 drink preferiti tra questi:"
+        android:textColor="@color/white"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@+id/tableLayout"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/promptQuestionarioDrink"
+        app:layout_constraintVertical_bias="0.75" />
 </androidx.constraintlayout.widget.ConstraintLayout>

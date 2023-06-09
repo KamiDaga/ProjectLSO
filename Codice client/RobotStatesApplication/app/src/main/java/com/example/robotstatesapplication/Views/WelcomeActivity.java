@@ -32,7 +32,6 @@ public class WelcomeActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent i = new Intent(WelcomeActivity.this, OutOfSightActivity.class);
-                i.putExtra("Origine", "Welcome");
                 startActivity(i);
             }
         });
@@ -40,7 +39,8 @@ public class WelcomeActivity extends AppCompatActivity {
         bottoneOrdina.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent i = new Intent(WelcomeActivity.this, ServingActivity.class);
+                Intent i = new Intent(WelcomeActivity.this, SuggestedOrderingActivity.class);
+                i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 startActivity(i);
             }
         });
@@ -48,4 +48,11 @@ public class WelcomeActivity extends AppCompatActivity {
 
 
     }
+
+    @Override
+    public void onBackPressed()
+    {
+
+    }
+
 }

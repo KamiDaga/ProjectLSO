@@ -1,20 +1,17 @@
-package com.example.robotstatesapplication;
+package com.example.robotstatesapplication.Views;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
-import android.content.res.ColorStateList;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.Button;
 
-import com.example.robotstatesapplication.Models.CaratteristicaDrinkEnum;
-import com.example.robotstatesapplication.Models.Drink;
 import com.example.robotstatesapplication.Models.Hobby;
-import com.example.robotstatesapplication.Views.LoginActivity;
-import com.example.robotstatesapplication.Views.QuestionarioDrinkActivity;
-import com.example.robotstatesapplication.Views.RegistrazioneActivity;
+import com.example.robotstatesapplication.R;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -30,6 +27,10 @@ public class QuestionarioHobbyActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        requestWindowFeature(Window.FEATURE_NO_TITLE);
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,WindowManager.LayoutParams.FLAG_FULLSCREEN);
+
         setContentView(R.layout.activity_questionario_hobby);
 
         hobbies.put(new Hobby(findViewById(R.id.iconaHobby1), "Sport"), false);
