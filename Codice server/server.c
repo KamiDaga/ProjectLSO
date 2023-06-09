@@ -323,7 +323,7 @@ void welcome(void* client)
     while(logged == 0)
     {      
         int scorririsposta = 0;
-
+        memset(risposta,0,sizeof(risposta));
         memset(state,0,sizeof(state));
         // int credenziali = 0;
         // printf("%d\n",credenziali);
@@ -362,7 +362,6 @@ void welcome(void* client)
                 username[i] = risposta[scorririsposta];
                 scorririsposta++;
             }
-            printf("%s\n",username);
             scorririsposta++;
             for(int i = 0; risposta[scorririsposta]!='-'; i++)
             {
