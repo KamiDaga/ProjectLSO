@@ -210,10 +210,11 @@ void serve(pnodet* clientconn, char* drink)
         {
             if(strcmp(risposta,"Si")==0)
             {
-                    //domande e risposte
+                    //manda il tempo di preparazione al client
             }
             else
             {
+                //al posto del 5 aspettiamo il tempo di preparazione
                 sleep(5);
                 char rispostaS[100];
                 memset(rispostaS,0,sizeof(rispostaS));
@@ -317,17 +318,19 @@ void welcome(void* client)
     printf("Benvenuto a %s\nIn attesa delle credenziali per effettuare il login.\n",address);
     char risposta[200];
     char state[20];
-    memset(risposta,0,sizeof(risposta));
     int logged = 0;
     //finche non si effettua il login
     while(logged == 0)
     {      
         int scorririsposta = 0;
+        memset(risposta,0,sizeof(risposta));
+        memset(state,0,sizeof(state));
         // int credenziali = 0;
         // printf("%d\n",credenziali);
         //Se si disconnette copiamo semplicemente quittiamo
         if(read(clientconn->socketc,risposta,sizeof(risposta))==0)
             strcpy(risposta,"gone");
+        printf("%s\n",risposta);
         memset(state,0,sizeof(state));
         for(int i = 0; risposta[scorririsposta]!= '\0' && risposta[scorririsposta]!= '-'; i++)
         {
@@ -339,17 +342,15 @@ void welcome(void* client)
         //Registrazione
         if(strcmp(state,"registerer")== 0)
         {
-            // Risposta conterra' qualcosa del tipo USERNAME-PASSWORD-ANS1-ANS2-ANS3
+            // Risposta conterra' qualcosa del tipo USERNAME-PASSWORD-ANS1-ANS2
             char username[21];
             char password[13];
-            char ans1[4];
-            char ans2[4];
-            char ans3[4];
+            char ans1[40];
+            char ans2[40];
             memset(username,0,sizeof(username));
             memset(password,0,sizeof(password));
             memset(ans1,0,sizeof(ans1));
             memset(ans2,0,sizeof(ans2));
-            memset(ans3,0,sizeof(ans3));
             char query[300];
 
             memset(query,0,sizeof(query));
@@ -361,7 +362,6 @@ void welcome(void* client)
                 username[i] = risposta[scorririsposta];
                 scorririsposta++;
             }
-            printf("%s\n",username);
             scorririsposta++;
             for(int i = 0; risposta[scorririsposta]!='-'; i++)
             {
@@ -375,18 +375,11 @@ void welcome(void* client)
                 scorririsposta++;
             }
             scorririsposta++;
-            for(int i = 0; risposta[scorririsposta]!='-'; i++)
+            for(int i = 0; risposta[scorririsposta]!='\0'; i++)
             {
                 ans2[i] = risposta[scorririsposta];
                 scorririsposta++;
             }
-            scorririsposta++;
-            for(int i = 0; risposta[scorririsposta]!='\0'; i++)
-            {
-                ans3[i] = risposta[scorririsposta];
-                scorririsposta++;
-            }
-            scorririsposta++;
             
             sprintf(query,"SELECT * FROM Utenti WHERE username = '%s'",username);
             pthread_mutex_lock(&mutexDb);
@@ -403,7 +396,7 @@ void welcome(void* client)
             else
             {
                 memset(query,0,sizeof(query));
-                sprintf(query,"INSERT INTO Utenti(username,password,answer1,answer2,answer3) VALUES ('%s','%s','%s','%s','%s');",username,password,ans1,ans2,ans3);
+                sprintf(query,"INSERT INTO Utenti(username,password,answer1,answer2) VALUES ('%s','%s','%s','%s');",username,password,ans1,ans2);
                 pthread_mutex_lock(&mutexDb);
                 mysql_query(con,query);
                 pthread_mutex_unlock(&mutexDb);
@@ -601,7 +594,7 @@ int main()
         exit(1);
     }
     char creazione[1000];
-    sprintf(creazione,"CREATE TABLE IF NOT EXISTS Utenti(username VARCHAR(21) PRIMARY KEY,answer1 VARCHAR(100) NOT NULL, answer2 VARCHAR(100) NOT NULL)");
+    sprintf(creazione,"CREATE TABLE IF NOT EXISTS Utenti(username VARCHAR(21) PRIMARY KEY,password VARCHAR(13) NOT NULL,answer1 VARCHAR(100) NOT NULL, answer2 VARCHAR(100) NOT NULL)");
     mysql_query(con,creazione);
     sprintf(creazione,"CREATE TABLE IF NOT EXISTS Elementi(Nome VARCHAR(50) PRIMARY KEY, prezzo DOUBLE PRECISION(7,4) NOT NULL )");
     mysql_query(con,creazione);
