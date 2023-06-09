@@ -210,10 +210,11 @@ void serve(pnodet* clientconn, char* drink)
         {
             if(strcmp(risposta,"Si")==0)
             {
-                    //domande e risposte
+                    //manda il tempo di preparazione al client
             }
             else
             {
+                //al posto del 5 aspettiamo il tempo di preparazione
                 sleep(5);
                 char rispostaS[100];
                 memset(rispostaS,0,sizeof(rispostaS));
@@ -339,17 +340,15 @@ void welcome(void* client)
         //Registrazione
         if(strcmp(state,"registerer")== 0)
         {
-            // Risposta conterra' qualcosa del tipo USERNAME-PASSWORD-ANS1-ANS2-ANS3
+            // Risposta conterra' qualcosa del tipo USERNAME-PASSWORD-ANS1-ANS2
             char username[21];
             char password[13];
-            char ans1[4];
-            char ans2[4];
-            char ans3[4];
+            char ans1[40];
+            char ans2[40];
             memset(username,0,sizeof(username));
             memset(password,0,sizeof(password));
             memset(ans1,0,sizeof(ans1));
             memset(ans2,0,sizeof(ans2));
-            memset(ans3,0,sizeof(ans3));
             char query[300];
 
             memset(query,0,sizeof(query));
@@ -381,12 +380,6 @@ void welcome(void* client)
                 scorririsposta++;
             }
             scorririsposta++;
-            for(int i = 0; risposta[scorririsposta]!='\0'; i++)
-            {
-                ans3[i] = risposta[scorririsposta];
-                scorririsposta++;
-            }
-            scorririsposta++;
             
             sprintf(query,"SELECT * FROM Utenti WHERE username = '%s'",username);
             pthread_mutex_lock(&mutexDb);
@@ -403,7 +396,7 @@ void welcome(void* client)
             else
             {
                 memset(query,0,sizeof(query));
-                sprintf(query,"INSERT INTO Utenti(username,password,answer1,answer2,answer3) VALUES ('%s','%s','%s','%s','%s');",username,password,ans1,ans2,ans3);
+                sprintf(query,"INSERT INTO Utenti(username,password,answer1,answer2) VALUES ('%s','%s','%s','%s');",username,password,ans1,ans2);
                 pthread_mutex_lock(&mutexDb);
                 mysql_query(con,query);
                 pthread_mutex_unlock(&mutexDb);
