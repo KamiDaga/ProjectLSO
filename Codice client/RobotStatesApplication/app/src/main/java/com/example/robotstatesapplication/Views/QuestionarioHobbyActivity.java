@@ -2,6 +2,8 @@ package com.example.robotstatesapplication.Views;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -80,7 +82,7 @@ public class QuestionarioHobbyActivity extends AppCompatActivity {
                     }
                 }
                 if (hobbyScelti.size() != 3) {
-
+                    mostraDialogErroreSelezioneHobby();
                 }
                 else {
                     Log.i("Questionario", hobbyScelti.toString());
@@ -93,5 +95,23 @@ public class QuestionarioHobbyActivity extends AppCompatActivity {
             }
         });
 
+    }
+
+    private void mostraDialogErroreSelezioneHobby() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(QuestionarioHobbyActivity.this);
+        builder.setTitle("Attenzione!");
+        builder.setMessage("Non hai selezionato abbastanza hobby.");
+        builder.setCancelable(false);
+        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+
+            }
+        });
+        AlertDialog alert = builder.create();
+        alert.show();
+        Button OkButton = alert.getButton(DialogInterface.BUTTON_POSITIVE);
+        OkButton.setBackgroundColor(getResources().getColor(R.color.blu_scuro));
+        OkButton.setTextColor(getResources().getColor(R.color.white));
     }
 }

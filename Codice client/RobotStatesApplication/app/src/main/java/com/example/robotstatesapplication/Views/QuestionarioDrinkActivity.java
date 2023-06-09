@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.TextView;
 
 import com.example.robotstatesapplication.Models.CaratteristicaDrinkEnum;
 import com.example.robotstatesapplication.Models.Drink;
@@ -82,23 +83,49 @@ public class QuestionarioDrinkActivity extends AppCompatActivity {
                     }
                 }
                 if (drinkScelti.size() != 3) {
-
+                    mostraDialogErroreSelezioneDrink();
                 }
                 else {
-                    AlertDialog.Builder builder = new AlertDialog.Builder(QuestionarioDrinkActivity.this);
-                    builder.setMessage("Ti consigliamo questo drink: "+ estraiValoriQuestionario(drinkScelti) + "!")
-                            .setCancelable(false)
-                            .setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                                public void onClick(DialogInterface dialog, int id) {
-                                    Intent i = new Intent(QuestionarioDrinkActivity.this, QuestionarioHobbyActivity.class);
-                                    startActivity(i);
-                                }
-                            });
-                    AlertDialog alert = builder.create();
-                    alert.show();
+                    mostraDialogDrinkSelezionati(drinkScelti);
                 }
             }
         });
+    }
+
+    private void mostraDialogDrinkSelezionati(Collection<Drink> drinkScelti) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(QuestionarioDrinkActivity.this);
+        builder.setTitle("Ti consiglio un drink da bere...");
+        builder.setMessage("Potrebbe piacerti questo drink: "+ estraiValoriQuestionario(drinkScelti) + "!")
+                .setCancelable(false)
+                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        Intent i = new Intent(QuestionarioDrinkActivity.this, QuestionarioHobbyActivity.class);
+                        startActivity(i);
+                    }
+                });
+        AlertDialog alert = builder.create();
+        alert.show();
+        Button OkButton = alert.getButton(DialogInterface.BUTTON_POSITIVE);
+        OkButton.setBackgroundColor(getResources().getColor(R.color.blu_scuro));
+        OkButton.setTextColor(getResources().getColor(R.color.white));
+    }
+
+    private void mostraDialogErroreSelezioneDrink() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(QuestionarioDrinkActivity.this);
+        builder.setTitle("Attenzione!");
+        builder.setMessage("Non hai selezionato abbastanza drink.");
+        builder.setCancelable(false);
+        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+
+            }
+        });
+        AlertDialog alert = builder.create();
+        alert.show();
+        Button OkButton = alert.getButton(DialogInterface.BUTTON_POSITIVE);
+        OkButton.setBackgroundColor(getResources().getColor(R.color.blu_scuro));
+        OkButton.setTextColor(getResources().getColor(R.color.white));
     }
 
     private Drink estraiValoriQuestionario (Collection<Drink> drinkScelti) {
