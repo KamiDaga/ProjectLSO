@@ -318,17 +318,19 @@ void welcome(void* client)
     printf("Benvenuto a %s\nIn attesa delle credenziali per effettuare il login.\n",address);
     char risposta[200];
     char state[20];
-    memset(risposta,0,sizeof(risposta));
     int logged = 0;
     //finche non si effettua il login
     while(logged == 0)
     {      
         int scorririsposta = 0;
+
+        memset(state,0,sizeof(state));
         // int credenziali = 0;
         // printf("%d\n",credenziali);
         //Se si disconnette copiamo semplicemente quittiamo
         if(read(clientconn->socketc,risposta,sizeof(risposta))==0)
             strcpy(risposta,"gone");
+        printf("%s\n",risposta);
         memset(state,0,sizeof(state));
         for(int i = 0; risposta[scorririsposta]!= '\0' && risposta[scorririsposta]!= '-'; i++)
         {
@@ -374,12 +376,11 @@ void welcome(void* client)
                 scorririsposta++;
             }
             scorririsposta++;
-            for(int i = 0; risposta[scorririsposta]!='-'; i++)
+            for(int i = 0; risposta[scorririsposta]!='\0'; i++)
             {
                 ans2[i] = risposta[scorririsposta];
                 scorririsposta++;
             }
-            scorririsposta++;
             
             sprintf(query,"SELECT * FROM Utenti WHERE username = '%s'",username);
             pthread_mutex_lock(&mutexDb);
@@ -594,7 +595,7 @@ int main()
         exit(1);
     }
     char creazione[1000];
-    sprintf(creazione,"CREATE TABLE IF NOT EXISTS Utenti(username VARCHAR(21) PRIMARY KEY,answer1 VARCHAR(100) NOT NULL, answer2 VARCHAR(100) NOT NULL)");
+    sprintf(creazione,"CREATE TABLE IF NOT EXISTS Utenti(username VARCHAR(21) PRIMARY KEY,password VARCHAR(13) NOT NULL,answer1 VARCHAR(100) NOT NULL, answer2 VARCHAR(100) NOT NULL)");
     mysql_query(con,creazione);
     sprintf(creazione,"CREATE TABLE IF NOT EXISTS Elementi(Nome VARCHAR(50) PRIMARY KEY, prezzo DOUBLE PRECISION(7,4) NOT NULL )");
     mysql_query(con,creazione);
