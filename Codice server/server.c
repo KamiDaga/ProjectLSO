@@ -600,10 +600,13 @@ int main()
         fprintf(stderr,"Errore durante la connessione al db:%s\n",mysql_error(con));
         exit(1);
     }
-
+    char creazione[1000];
+    sprintf(creazione,"CREATE TABLE IF NOT EXISTS Utenti(username VARCHAR(21) PRIMARY KEY,answer1 VARCHAR(100) NOT NULL, answer2 VARCHAR(100) NOT NULL)");
+    mysql_query(con,creazione);
+    sprintf(creazione,"CREATE TABLE IF NOT EXISTS Elementi(Nome VARCHAR(50) PRIMARY KEY, prezzo DOUBLE PRECISION(7,4) NOT NULL )");
+    mysql_query(con,creazione);
     signal(SIGPIPE,nada);
-    pthread_mutex_init(&mutexDb,NULL);
-    pthread_mutex_init(&mutexQueue,NULL);
+    
     pnodet* node = NULL;    
     mainthread = pthread_self();
     
