@@ -13,6 +13,7 @@
 MYSQL *con;
 //mutex per la lista
 pthread_mutex_t mutexQueue;
+pthread_mutex_t mutexDb;
 
 pthread_t mainthread; //processo che gestisce le chiamate
 pthread_t queuemanager; //processo che gestisce le persone in ordering/serving
@@ -388,8 +389,10 @@ void welcome(void* client)
             scorririsposta++;
             
             sprintf(query,"SELECT * FROM Utenti WHERE username = '%s'",username);
+            pthread_mutex_lock(&mutexDb);
             mysql_query(con,query);
             MYSQL_RES *result = mysql_store_result(con);
+            pthread_mutex_unlock(&mutexDb);
             if(mysql_num_rows(result)!=0)
             {
                 printf("Ho fatto la query\n");
@@ -401,7 +404,9 @@ void welcome(void* client)
             {
                 memset(query,0,sizeof(query));
                 sprintf(query,"INSERT INTO Utenti(username,password,answer1,answer2,answer3) VALUES ('%s','%s','%s','%s','%s');",username,password,ans1,ans2,ans3);
+                pthread_mutex_lock(&mutexDb);
                 mysql_query(con,query);
+                pthread_mutex_unlock(&mutexDb);
                 memset(risposta,0,sizeof(risposta));
                 strcpy(risposta,"Utente registrato con successo! Effettua il login.\n");
                 send(clientconn->socketc, risposta,strlen(risposta),0);
@@ -437,10 +442,11 @@ void welcome(void* client)
             }
             
             sprintf(query,"SELECT password FROM Utenti WHERE username = '%s'",username);
-            
+            pthread_mutex_lock(&mutexDb);
             mysql_query(con,query);
-
             MYSQL_RES *result = mysql_store_result(con);
+            pthread_mutex_unlock(&mutexDb);
+
             //Se l'utente non esiste
             if(mysql_num_rows(result)==0)
             {
@@ -596,6 +602,7 @@ int main()
     }
 
     signal(SIGPIPE,nada);
+    pthread_mutex_init(&mutexDb,NULL);
     pthread_mutex_init(&mutexQueue,NULL);
     pnodet* node = NULL;    
     mainthread = pthread_self();
