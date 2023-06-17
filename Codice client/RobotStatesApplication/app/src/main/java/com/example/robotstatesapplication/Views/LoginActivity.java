@@ -8,6 +8,7 @@ import android.text.Spannable;
 import android.text.SpannableStringBuilder;
 import android.text.method.HideReturnsTransformationMethod;
 import android.text.method.PasswordTransformationMethod;
+import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -16,7 +17,11 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.example.robotstatesapplication.Models.SocketSingleton;
 import com.example.robotstatesapplication.R;
+
+import java.io.IOException;
+import java.net.Socket;
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -29,6 +34,7 @@ public class LoginActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
 
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,WindowManager.LayoutParams.FLAG_FULLSCREEN);
@@ -45,6 +51,11 @@ public class LoginActivity extends AppCompatActivity {
         SpannableStringBuilder str = new SpannableStringBuilder("Non hai un account? Registrati qui");
         str.setSpan(new android.text.style.StyleSpan(android.graphics.Typeface.BOLD), 20, 34, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
         textViewRegistrazione.setText(str);
+
+        Thread threadSocket = new Thread(()->{
+            SocketSingleton.getInstance();
+        });
+        threadSocket.start();
 
         bottoneRegistrazione.setOnClickListener(new View.OnClickListener() {
             @Override

@@ -100,6 +100,9 @@ public class QuestionarioDrinkActivity extends AppCompatActivity {
                 .setPositiveButton("OK", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         Intent i = new Intent(QuestionarioDrinkActivity.this, QuestionarioHobbyActivity.class);
+                        i.putExtra("USERNAME", getIntent().getStringExtra("USERNAME"));
+                        i.putExtra("PASSWORD", getIntent().getStringExtra("PASSWORD"));
+                        i.putExtra("DRINK", estraiValoriQuestionario(drinkScelti).toString());
                         startActivity(i);
                     }
                 });

@@ -32,7 +32,7 @@ public class RegistrazioneActivity extends AppCompatActivity {
     private TextView dateView;
     private Calendar calendario = Calendar.getInstance();
     private ImageView bottoneOcchioPassword, bottoneOcchioConferma;
-    private EditText editTextPassword, editTextConferma;
+    private EditText editTextUsername, editTextDataNascita, editTextPassword, editTextConferma;
 
     @SuppressLint("ResourceType")
     @Override
@@ -51,6 +51,8 @@ public class RegistrazioneActivity extends AppCompatActivity {
         dateView = findViewById(R.id.editTextDataNascita);
         bottoneOcchioPassword = findViewById(R.id.occhioPasswordRegistrazione);
         bottoneOcchioConferma = findViewById(R.id.occhioConfermaPasswordRegistrazione);
+        editTextDataNascita = findViewById(R.id.editTextDataNascita);
+        editTextUsername = findViewById(R.id.editTextUsernameRegistrazione);
         editTextPassword = findViewById(R.id.editTextPasswordRegistrazione);
         editTextConferma = findViewById(R.id.editTextConfermaPasswordRegistrazione);
 
@@ -72,7 +74,11 @@ public class RegistrazioneActivity extends AppCompatActivity {
         bottoneAvanti.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                String username = editTextUsername.getText().toString();
+                String password = editTextConferma.getText().toString();
                 Intent i = new Intent(RegistrazioneActivity.this, QuestionarioDrinkActivity.class);
+                i.putExtra("USERNAME", username);
+                i.putExtra("PASSWORD", password);
                 startActivity(i);
             }
         });

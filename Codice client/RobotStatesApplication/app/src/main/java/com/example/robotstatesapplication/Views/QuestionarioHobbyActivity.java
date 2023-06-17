@@ -6,6 +6,7 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.View;
 import android.view.Window;
@@ -13,8 +14,11 @@ import android.view.WindowManager;
 import android.widget.Button;
 
 import com.example.robotstatesapplication.Models.Hobby;
+import com.example.robotstatesapplication.Models.SocketSingleton;
 import com.example.robotstatesapplication.R;
 
+import java.io.IOException;
+import java.net.Socket;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -89,6 +93,23 @@ public class QuestionarioHobbyActivity extends AppCompatActivity {
 
                     Intent i = new Intent(QuestionarioHobbyActivity.this, LoginActivity.class);
                     i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                    Thread threadSocket = new Thread(()->{
+                        SocketSingleton.getInstance().getSocketOut().println(
+                                "registerer-"+getIntent().getStringExtra("USERNAME")+"-"+getIntent().getStringExtra("PASSWORD")+
+                                        "-"+getIntent().getStringExtra("DRINK")+"-"+formaStringaHobby(hobbyScelti));
+                        SocketSingleton.getInstance().getSocketOut().flush();
+                        try {
+                            Log.i("INPUT", SocketSingleton.getInstance().getSocketIn().readLine());
+                        } catch (IOException e) {
+                            throw new RuntimeException(e);
+                        }
+                    });
+                    threadSocket.start();
+                    try {
+                        threadSocket.join();
+                    } catch (InterruptedException e) {
+                        throw new RuntimeException(e);
+                    }
                     startActivity(i);
                 }
 
@@ -113,5 +134,14 @@ public class QuestionarioHobbyActivity extends AppCompatActivity {
         Button OkButton = alert.getButton(DialogInterface.BUTTON_POSITIVE);
         OkButton.setBackgroundColor(getResources().getColor(R.color.blu_scuro));
         OkButton.setTextColor(getResources().getColor(R.color.white));
+    }
+
+    private static String formaStringaHobby(Collection<Hobby> hobbies) {
+        StringBuffer stringBuffer = new StringBuffer();
+        for (Hobby h : hobbies) {
+            stringBuffer.append(h.getDescrizione()+"/");
+        }
+        stringBuffer.deleteCharAt(stringBuffer.length()-1);
+        return stringBuffer.toString();
     }
 }

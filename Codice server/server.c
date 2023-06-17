@@ -40,7 +40,7 @@ struct pnode{
     pthread_t id; //pthread id
     char* state;//Possibili valori:
     //WELCOME, WAITING, ORDERING, SERVING, SERVED, FAREWELLING,GONE
-    
+
     struct pnode * next; //prossimo elemento
     struct pnode * prev; //elemento successivo
 };
@@ -177,7 +177,7 @@ void farewell(pnodet* clientconn)
     clientconn->state = "GONE";
     pthread_mutex_unlock(&mutexQueue);
     //printf("%s\n",clientconn->state);
-    
+
 }
 
 void serve(pnodet* clientconn, char* drink)
@@ -201,7 +201,7 @@ void serve(pnodet* clientconn, char* drink)
             quittiamo = 1;
         }
         else if(strcmp(risposta,"oos")==0)
-        {  
+        {
             char* rispostaS = prepare == 1 ? "A piu tardi!\n" : "Bentornato!";
             send(clientconn->socketc, rispostaS,strlen(rispostaS),0);
             prepare = prepare==1 ?  0 : 1;
@@ -229,7 +229,7 @@ void serve(pnodet* clientconn, char* drink)
     pthread_mutex_unlock(&mutexQueue);
     while(strcmp(clientconn->state,"FAREWELLING")!=0)
     {
-        
+
     }
     farewell(clientconn);
 }
@@ -246,7 +246,7 @@ void order(pnodet* clientconn)
         memset(risposta,0,sizeof(risposta));
         if(read(clientconn->socketc,risposta,sizeof(risposta))==0)
             strcpy(risposta,"gone");
-        
+
         if(strcmp(risposta,"oos")==0)
         {
             char* rispostaS = oos == 0? "A piu tardi!\n" : "Bentornato!\n";
@@ -268,7 +268,7 @@ void order(pnodet* clientconn)
             memset(elementocorrente,0,sizeof(elementocorrente));
             while(delmenu ==0 && menu[i] != '\0')
             {
-    
+
                 if(menu[i]!='\n')
                 {
                     elementocorrente[j] = menu[i];
@@ -321,7 +321,7 @@ void welcome(void* client)
     int logged = 0;
     //finche non si effettua il login
     while(logged == 0)
-    {      
+    {
         int scorririsposta = 0;
         memset(risposta,0,sizeof(risposta));
         memset(state,0,sizeof(state));
@@ -354,7 +354,7 @@ void welcome(void* client)
             char query[300];
 
             memset(query,0,sizeof(query));
-            
+
 
             //Copio i valori nelle stringhe
             for(int i = 0; risposta[scorririsposta]!='-'; i++)
@@ -380,7 +380,7 @@ void welcome(void* client)
                 ans2[i] = risposta[scorririsposta];
                 scorririsposta++;
             }
-            
+
             sprintf(query,"SELECT * FROM Utenti WHERE username = '%s'",username);
             pthread_mutex_lock(&mutexDb);
             mysql_query(con,query);
@@ -405,7 +405,7 @@ void welcome(void* client)
                 send(clientconn->socketc, risposta,strlen(risposta),0);
             }
 
-        }    
+        }
         else if(strcmp(risposta,"gone") == 0)
         {
             logged = 1;
@@ -433,7 +433,7 @@ void welcome(void* client)
                 password[i] = risposta[scorririsposta];
                 scorririsposta++;
             }
-            
+
             sprintf(query,"SELECT password FROM Utenti WHERE username = '%s'",username);
             pthread_mutex_lock(&mutexDb);
             mysql_query(con,query);
@@ -447,10 +447,10 @@ void welcome(void* client)
                 strcpy(risposta,"Utente non trovato! Riprova.");
                 send(clientconn->socketc, risposta,strlen(risposta),0);
             }
-            else 
+            else
             {
                 MYSQL_ROW pass = mysql_fetch_row(result);
-               
+
                 if(strcmp(pass[0],password)==0)
                 {
                     logged = 1;
@@ -461,8 +461,9 @@ void welcome(void* client)
 
             }
         }
-    
+
     }
+    printf("SUPERATO");
     pthread_mutex_lock(&mutexQueue);
     clientconn->state = "WAITING";
     pthread_mutex_unlock(&mutexQueue);
@@ -505,10 +506,10 @@ void checkfarewelling()
     while(explorer != NULL)
     {
         if(strcmp(explorer->state,"SERVED")==0)
-        {  
-        
+        {
 
-            
+
+
             if(explorer->id == cl1)
                 cl1=-1;
                 // pthread_cancel(oos1);
@@ -519,7 +520,7 @@ void checkfarewelling()
             inServingWaiting--;
         }
         explorer = explorer->next;
-    }   
+    }
 }
 
 void checkwaiting()
@@ -528,7 +529,7 @@ void checkwaiting()
     while(explorer != NULL && inServingWaiting<2)
     {
         if(strcmp(explorer->state,"WAITING")==0)
-        {  
+        {
             inServingWaiting++;
             if(cl1 == -1)
             {
@@ -546,7 +547,7 @@ void checkwaiting()
 
         }
         explorer = explorer->next;
-    }   
+    }
 }
 //Elimina i nodi di socket disconnesse e fa andare i nodi da waiting a ordering
 void checklist()
@@ -599,10 +600,10 @@ int main()
     sprintf(creazione,"CREATE TABLE IF NOT EXISTS Elementi(Nome VARCHAR(50) PRIMARY KEY, prezzo DOUBLE PRECISION(7,4) NOT NULL )");
     mysql_query(con,creazione);
     signal(SIGPIPE,nada);
-    
-    pnodet* node = NULL;    
+
+    pnodet* node = NULL;
     mainthread = pthread_self();
-    
+
     int sockets = socket(AF_INET, SOCK_STREAM, 0);
     struct sockaddr_in indirizzo;
 
@@ -626,11 +627,11 @@ int main()
         perror("Errore tread delle queue");
         exit(1);
     };
-        
+
     while(1)
     {
         node = (pnodet*)malloc(sizeof(pnodet));
-       
+
         socklen_t length = sizeof(node->indirizzoc);
         node->socketc = accept(sockets,&(node->indirizzoc), &length);
         if(node->socketc <0)
@@ -646,8 +647,5 @@ int main()
         pthread_detach(node->id);
         pthread_mutex_unlock(&mutexQueue);
     }
-    
+
 }
-
-
-
