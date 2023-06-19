@@ -30,6 +30,10 @@ public class SocketSingleton {
         return instance;
     }
 
+    public static void rinnovaIstanza() {
+        instance = new SocketSingleton();
+    }
+
     public Socket getAppSocket() {
         return appSocket;
     }

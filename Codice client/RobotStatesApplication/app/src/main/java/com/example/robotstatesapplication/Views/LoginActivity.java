@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
 import android.text.method.HideReturnsTransformationMethod;
@@ -22,6 +23,7 @@ import com.example.robotstatesapplication.R;
 import com.example.robotstatesapplication.Utils.AlertBuilder;
 
 import java.io.IOException;
+import java.net.ConnectException;
 import java.net.Socket;
 
 public class LoginActivity extends AppCompatActivity {
@@ -36,16 +38,10 @@ public class LoginActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        Thread threadSocket = new Thread(()->{
-            SocketSingleton.getInstance();
-        });
-        threadSocket.start();
-
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
         setContentView(R.layout.activity_login);
-
 
         textViewRegistrazione = findViewById(R.id.textViewInizioRegistrazione);
         bottoneRegistrazione = findViewById(R.id.textViewInizioRegistrazione);
@@ -71,6 +67,13 @@ public class LoginActivity extends AppCompatActivity {
             public void onClick(View v) {
                 String username = editTextUsername.getText().toString();
                 String password = editTextPassword.getText().toString();
+
+                if (username.length() > 20 || password.length() > 12 || username.contains("-") || password.contains("-")) {
+                    AlertBuilder.buildAlertSingoloBottone(LoginActivity.this, "Attenzione!", "Lo username o la password inserite non rispettano i giusti criteri." +
+                            "\nAssicurarsi che:\nLo username abbia massimo 20 caratteri e non contenga '-'\nLa password abbia massimo 12 caratteri e non contenga '-'");
+                    return;
+                }
+
 
                 class ThreadControllo extends Thread {
 
@@ -108,14 +111,10 @@ public class LoginActivity extends AppCompatActivity {
                 ThreadControllo threadSocket = new ThreadControllo();
 
                 threadSocket.start();
-                AlertBuilder.mostraAlertAttesaCaricamento(LoginActivity.this);
                 try {
                     threadSocket.join();
                 } catch (InterruptedException e) {
                     AlertBuilder.buildAlertSingoloBottone(LoginActivity.this, "Errore!", "C'è stato un errore, riprovare!");
-                }
-                finally {
-                    AlertBuilder.nascondiAlertAttesaCaricamento();
                 }
                 if (!threadSocket.isUtenteTrovato()) {
                     AlertBuilder.buildAlertSingoloBottone(LoginActivity.this, "Errore!", "Il nome utente inserito non è corretto!");
@@ -126,6 +125,7 @@ public class LoginActivity extends AppCompatActivity {
                 else {
                     Intent i = new Intent(LoginActivity.this, WelcomeActivity.class);
                     i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                    i.putExtra("USERNAME", username);
                     startActivity(i);
                 }
             }
@@ -144,5 +144,22 @@ public class LoginActivity extends AppCompatActivity {
                 }
             }
         });
+    }
+
+    @Override
+    public void onStart() {
+        Handler handler = new Handler();
+        Thread threadSocket = new Thread(()->{
+            try {
+                if (getIntent().getStringExtra("RESTART") != null)
+                    SocketSingleton.rinnovaIstanza();
+                SocketSingleton.getInstance();
+            }
+            catch (Exception e) {
+                handler.post(()->AlertBuilder.buildAlertSingoloBottone(LoginActivity.this, "Errore!", "C'è stato un errore di comunicazione, chiudere l'applicazione."));
+            }
+        });
+        threadSocket.start();
+        super.onStart();
     }
 }

@@ -293,6 +293,7 @@ void order(pnodet* clientconn)
                 char rispostaS[100];
                 memset(rispostaS,0,sizeof(rispostaS));
                 sprintf(rispostaS,"Ottima scelta!\n");
+                printf("Ottima scelta!\n");
                 send(clientconn->socketc, rispostaS,strlen(rispostaS),0);
                 quittiamo = 1;
             }

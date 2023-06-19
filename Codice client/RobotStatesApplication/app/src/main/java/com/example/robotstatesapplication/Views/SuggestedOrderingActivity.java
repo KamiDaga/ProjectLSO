@@ -34,6 +34,7 @@ public class SuggestedOrderingActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent i = new Intent(SuggestedOrderingActivity.this, OrderingActivity.class);
+                i.putExtra("MENU", getIntent().getSerializableExtra("MENU"));
                 startActivity(i);
             }
         });

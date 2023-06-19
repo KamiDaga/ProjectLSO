@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.TextView;
 
 import com.example.robotstatesapplication.Models.Drink;
 import com.example.robotstatesapplication.Models.SocketSingleton;
@@ -23,6 +24,8 @@ public class WelcomeActivity extends AppCompatActivity {
     private Button bottoneOrdina;
 
     private ArrayList<String> menù = new ArrayList<>();
+    private String username;
+    private TextView tvPrompt;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,20 +38,29 @@ public class WelcomeActivity extends AppCompatActivity {
 
         bottoneOutOfSight = findViewById(R.id.bottoneOutOfSightWelcome);
         bottoneOrdina = findViewById(R.id.bottoneOrdinaWelcome);
+        tvPrompt = findViewById(R.id.promptWaiting);
 
-            Thread threadSocket = new Thread(()-> {
-                try {
-                    while (SocketSingleton.getInstance().getSocketIn().ready()) {
-                        menù.add(SocketSingleton.getInstance().getSocketIn().readLine());
-                    }
-                } catch (IOException e) {
-                    AlertBuilder.buildAlertSingoloBottone(WelcomeActivity.this, "Errore!", "C'è stato un errore di comunicazione, riprovare!");
-                }
-            });
+        username = getIntent().getStringExtra("USERNAME");
+
+        tvPrompt.setText("Ciao, " + username);
 
         bottoneOutOfSight.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Thread threadOOS = new Thread(()-> {
+                    try {
+                        SocketSingleton.getInstance().getSocketOut().print("oos");
+                        SocketSingleton.getInstance().getSocketOut().flush();
+                    } catch (Exception e) {
+                        AlertBuilder.buildAlertSingoloBottone(WelcomeActivity.this, "Errore!", "C'è stato un errore di comunicazione, riprovare!");
+                    }
+                });
+                threadOOS.start();
+                try {
+                    threadOOS.join();
+                } catch (InterruptedException e) {
+                    AlertBuilder.buildAlertSingoloBottone(WelcomeActivity.this, "Errore!", "C'è stato un errore, riprovare!");
+                }
                 Intent i = new Intent(WelcomeActivity.this, OutOfSightActivity.class);
                 startActivity(i);
             }
@@ -57,17 +69,10 @@ public class WelcomeActivity extends AppCompatActivity {
         bottoneOrdina.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (menù.isEmpty()) {
-                    Intent i = new Intent(WelcomeActivity.this, WaitingActivity.class);
-                    i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                    startActivity(i);
-                }
-                else {
-                    Intent i = new Intent(WelcomeActivity.this, SuggestedOrderingActivity.class);
-                    i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                    i.putExtra("MENU", menù);
-                    startActivity(i);
-                }
+                Intent i = new Intent(WelcomeActivity.this, WaitingActivity.class);
+                i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                i.putExtra("USERNAME", username);
+                startActivity(i);
             }
         });
 

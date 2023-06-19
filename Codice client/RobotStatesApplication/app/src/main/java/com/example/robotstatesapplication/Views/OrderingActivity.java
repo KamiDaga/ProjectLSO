@@ -16,8 +16,11 @@ import android.widget.RadioGroup;
 
 import com.example.robotstatesapplication.Models.CaratteristicaDrinkEnum;
 import com.example.robotstatesapplication.Models.Drink;
+import com.example.robotstatesapplication.Models.SocketSingleton;
 import com.example.robotstatesapplication.R;
+import com.example.robotstatesapplication.Utils.AlertBuilder;
 
+import java.net.ServerSocket;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -41,19 +44,7 @@ public class OrderingActivity extends AppCompatActivity {
         bottoneEsci = findViewById(R.id.bottoneTornaAlLoginOrdering);
         bottoneOutOfSight = findViewById(R.id.bottoneOutOfSightOrdering);
 
-        listaDrink.add(new Drink(null, "Negroni", CaratteristicaDrinkEnum.AMARO, "Bella domanda"));
-        listaDrink.add(new Drink(null, "Tequila Sunrise", CaratteristicaDrinkEnum.FRUTTATO, "Tequila"));
-        listaDrink.add(new Drink(null, "Sex on the beach", CaratteristicaDrinkEnum.FRUTTATO, "Bella domanda"));
-        listaDrink.add(new Drink(null, "Aperol Spritz", CaratteristicaDrinkEnum.FRUTTATO, "Aperol"));
-        listaDrink.add(new Drink(null, "Pina colada", CaratteristicaDrinkEnum.DOLCE, "Rum"));
-        listaDrink.add(new Drink(null, "Mudslide", CaratteristicaDrinkEnum.DOLCE, "Vodka"));
-        listaDrink.add(new Drink(null, "Espress 75", CaratteristicaDrinkEnum.DOLCE, "Gin"));
-        listaDrink.add(new Drink(null, "Rum Manhattan", CaratteristicaDrinkEnum.AMARO, "Rum"));
-        listaDrink.add(new Drink(null, "Negroski", CaratteristicaDrinkEnum.AMARO, "Vodka"));
-        listaDrink.add(new Drink(null, "Martini", CaratteristicaDrinkEnum.AMARO, "Gin"));
-        listaDrink.add(new Drink(null, "Mojito", CaratteristicaDrinkEnum.FRUTTATO, "Rum"));
-        listaDrink.add(new Drink(null, "Cosmopolitan", CaratteristicaDrinkEnum.FRUTTATO, "Vodka"));
-        listaDrink.add(new Drink(null, "Gin fizz", CaratteristicaDrinkEnum.FRUTTATO, "Gin"));
+       listaDrink.addAll((ArrayList<Drink>)getIntent().getSerializableExtra("MENU"));
 
         for (Drink drink : listaDrink) {
             RadioButton radioDrinkCorrente = new RadioButton(OrderingActivity.this);
@@ -68,14 +59,34 @@ public class OrderingActivity extends AppCompatActivity {
             gruppoRadioDrink.addView(radioDrinkCorrente, layoutParams);
         }
 
+        gruppoRadioDrink.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup group, int checkedId) {
+                drinkScelto = listaDrink.get(checkedId);
+            }
+        });
+
         bottoneConferma.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (drinkScelto != null) {
+                    Thread threadDrink = new Thread(()->{
+                        SocketSingleton.getInstance().getSocketOut().print(drinkScelto.getNome());
+                        SocketSingleton.getInstance().getSocketOut().flush();
+                    });
+                    threadDrink.start();
+                    try {
+                        threadDrink.join();
+                    } catch (InterruptedException e) {
+                        AlertBuilder.buildAlertSingoloBottone(OrderingActivity.this, "Errore!", "C'è stato un errore, riprovare!");
+                    }
                     Intent i = new Intent(OrderingActivity.this, ServingActivityInteracting.class);
-                    i.putExtra("Drink", drinkScelto.getNome());
+                    i.putExtra("DRINK", drinkScelto.getNome());
                     i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                     startActivity(i);
+                }
+                else {
+                    AlertBuilder.buildAlertSingoloBottone(OrderingActivity.this, "Attenzione!", "Non è stato selezionato alcun drink!");
                 }
             }
         });
@@ -85,6 +96,17 @@ public class OrderingActivity extends AppCompatActivity {
             public void onClick(View v) {
                 Intent i = new Intent(OrderingActivity.this, LoginActivity.class);
                 i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                Thread threadGone = new Thread(()->{
+                    SocketSingleton.getInstance().getSocketOut().print("gone");
+                    SocketSingleton.getInstance().getSocketOut().flush();
+                });
+                threadGone.start();
+                try {
+                    threadGone.join();
+                } catch (InterruptedException e) {
+                    AlertBuilder.buildAlertSingoloBottone(OrderingActivity.this, "Errore!", "C'è stato un errore, riprovare!");
+                }
+                i.putExtra("RESTART", "");
                 startActivity(i);
             }
         });
@@ -92,13 +114,24 @@ public class OrderingActivity extends AppCompatActivity {
         bottoneOutOfSight.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Thread threadOOS = new Thread(()-> {
+                    try {
+                        SocketSingleton.getInstance().getSocketOut().print("oos");
+                        SocketSingleton.getInstance().getSocketOut().flush();
+                    } catch (Exception e) {
+                        AlertBuilder.buildAlertSingoloBottone(OrderingActivity.this, "Errore!", "C'è stato un errore di comunicazione, riprovare!");
+                    }
+                });
+                threadOOS.start();
+                try {
+                    threadOOS.join();
+                } catch (InterruptedException e) {
+                    AlertBuilder.buildAlertSingoloBottone(OrderingActivity.this, "Errore!", "C'è stato un errore, riprovare!");
+                }
                 Intent i = new Intent(OrderingActivity.this, OutOfSightActivity.class);
                 startActivity(i);
             }
         });
     }
 
-    public void setDrinkScelto (Drink drinkCliccato) {
-        drinkScelto = drinkCliccato;
-    }
 }

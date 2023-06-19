@@ -2,7 +2,9 @@ package com.example.robotstatesapplication.Models;
 
 import android.widget.ImageView;
 
-public class Drink {
+import java.io.Serializable;
+
+public class Drink implements Serializable {
 
     private ImageView icona;
     private String nome;
@@ -14,6 +16,10 @@ public class Drink {
         this.nome = nome;
         this.caratteristica = caratteristica;
         this.alcol = alcol;
+    }
+
+    public Drink(String nome) {
+        this.nome = nome;
     }
 
     public ImageView getIcona() {
