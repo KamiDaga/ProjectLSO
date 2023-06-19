@@ -22,6 +22,8 @@ public class WaitingActivity extends AppCompatActivity {
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
+        setContentView(R.layout.activity_waiting);
+
         bottoneOutOfSight = findViewById(R.id.bottoneOutOfSightWaiting);
 
         bottoneOutOfSight.setOnClickListener(new View.OnClickListener() {
@@ -31,8 +33,6 @@ public class WaitingActivity extends AppCompatActivity {
                 startActivity(i);
             }
         });
-
-        setContentView(R.layout.activity_waiting);
     }
 
     @Override

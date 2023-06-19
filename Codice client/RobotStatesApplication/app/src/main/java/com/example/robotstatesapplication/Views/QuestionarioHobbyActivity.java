@@ -16,6 +16,7 @@ import android.widget.Button;
 import com.example.robotstatesapplication.Models.Hobby;
 import com.example.robotstatesapplication.Models.SocketSingleton;
 import com.example.robotstatesapplication.R;
+import com.example.robotstatesapplication.Utils.AlertBuilder;
 
 import java.io.IOException;
 import java.net.Socket;
@@ -94,21 +95,24 @@ public class QuestionarioHobbyActivity extends AppCompatActivity {
                     Intent i = new Intent(QuestionarioHobbyActivity.this, LoginActivity.class);
                     i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                     Thread threadSocket = new Thread(()->{
-                        SocketSingleton.getInstance().getSocketOut().println(
+                        SocketSingleton.getInstance().getSocketOut().print(
                                 "registerer-"+getIntent().getStringExtra("USERNAME")+"-"+getIntent().getStringExtra("PASSWORD")+
                                         "-"+getIntent().getStringExtra("DRINK")+"-"+formaStringaHobby(hobbyScelti));
                         SocketSingleton.getInstance().getSocketOut().flush();
                         try {
                             Log.i("INPUT", SocketSingleton.getInstance().getSocketIn().readLine());
                         } catch (IOException e) {
-                            throw new RuntimeException(e);
+                            AlertBuilder.buildAlertSingoloBottone(QuestionarioHobbyActivity.this, "Errore!", "C'è stato un errore di comunicazione, riprovare!");
                         }
                     });
+                    AlertBuilder.mostraAlertAttesaCaricamento(QuestionarioHobbyActivity.this);
                     threadSocket.start();
                     try {
                         threadSocket.join();
                     } catch (InterruptedException e) {
-                        throw new RuntimeException(e);
+                        AlertBuilder.buildAlertSingoloBottone(QuestionarioHobbyActivity.this, "Errore!", "C'è stato un errore, riprovare!");
+                    } finally {
+                        AlertBuilder.nascondiAlertAttesaCaricamento();
                     }
                     startActivity(i);
                 }

@@ -240,6 +240,7 @@ void order(pnodet* clientconn)
     char risposta[20];
     int quittiamo = 0;
     int oos = 0;
+    printf("PROVA\n");
     send(clientconn->socketc, menu,strlen(menu),0);
     while(quittiamo == 0)
     {
@@ -390,7 +391,7 @@ void welcome(void* client)
             {
                 printf("Ho fatto la query\n");
                 memset(risposta,0,sizeof(risposta));
-                strcpy(risposta,"Esiste gia' un utente con questo nome!");
+                strcpy(risposta,"Esiste gia' un utente con questo nome!\n");
                 send(clientconn->socketc, risposta,strlen(risposta),0);
             }
             else
@@ -420,7 +421,6 @@ void welcome(void* client)
             memset(password,0,sizeof(password));
             memset(query,0,sizeof(query));
             //Copio i valori nelle stringhe
-            printf("%c\n",risposta[scorririsposta]);
             for(int i = 0; risposta[scorririsposta]!='-'; i++)
             {
                 username[i] = risposta[scorririsposta];
@@ -434,17 +434,16 @@ void welcome(void* client)
                 scorririsposta++;
             }
 
-            sprintf(query,"SELECT password FROM Utenti WHERE username = '%s'",username);
+            sprintf(query,"SELECT password FROM Utenti WHERE username = '%s';",username);
             pthread_mutex_lock(&mutexDb);
             mysql_query(con,query);
             MYSQL_RES *result = mysql_store_result(con);
             pthread_mutex_unlock(&mutexDb);
-
             //Se l'utente non esiste
             if(mysql_num_rows(result)==0)
             {
                 memset(risposta,0,sizeof(risposta));
-                strcpy(risposta,"Utente non trovato! Riprova.");
+                strcpy(risposta,"Utente non trovato! Riprova.\n");
                 send(clientconn->socketc, risposta,strlen(risposta),0);
             }
             else
@@ -455,7 +454,12 @@ void welcome(void* client)
                 {
                     logged = 1;
                     memset(risposta,0,sizeof(risposta));
-                    sprintf(risposta,"Benvenuto, %s!", username);
+                    sprintf(risposta,"Benvenuto, %s!\n", username);
+                    send(clientconn->socketc, risposta,strlen(risposta),0);
+                }
+                else {
+                    memset(risposta,0,sizeof(risposta));
+                    sprintf(risposta,"Password errata, %s!\n", username);
                     send(clientconn->socketc, risposta,strlen(risposta),0);
                 }
 
@@ -463,7 +467,6 @@ void welcome(void* client)
         }
 
     }
-    printf("SUPERATO");
     pthread_mutex_lock(&mutexQueue);
     clientconn->state = "WAITING";
     pthread_mutex_unlock(&mutexQueue);
@@ -606,6 +609,10 @@ int main()
 
     int sockets = socket(AF_INET, SOCK_STREAM, 0);
     struct sockaddr_in indirizzo;
+
+    int reuse = 1;
+    if (setsockopt(sockets, SOL_SOCKET, SO_REUSEADDR, (const char*)&reuse, sizeof(reuse)) < 0)
+        perror("Errore in set di opzioni\n");
 
     indirizzo.sin_family = AF_INET;
     indirizzo.sin_port = htons(5000);
