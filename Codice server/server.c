@@ -238,7 +238,7 @@ void serve(pnodet* clientconn, char* drink)
 
 void order(pnodet* clientconn)
 {
-    char* menu = "Margarita\nCosmopolitan\nDaiquiri\nGimlet\nManhattan\n";
+    char* menu = "Negroni\nTequila Sunrise\nSex on the beach\nAperol Spritz\nPina colada\nMudslide\nEspress 75\nRum Manhattan\nNegroski\nMartini\nMojito\nCosmopolitan\nGin fizz\n";
     char risposta[20];
     int quittiamo = 0;
     int oos = 0;
