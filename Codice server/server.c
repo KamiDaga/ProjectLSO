@@ -12,6 +12,7 @@
 //Struttura per il db
 MYSQL *con;
 //mutex per la lista
+pthread_cond_t condMutexQueue;
 pthread_mutex_t mutexQueue;
 pthread_mutex_t mutexDb;
 
@@ -226,11 +227,12 @@ void serve(pnodet* clientconn, char* drink)
     }
     pthread_mutex_lock(&mutexQueue);
     clientconn->state = "SERVED";
-    pthread_mutex_unlock(&mutexQueue);
     while(strcmp(clientconn->state,"FAREWELLING")!=0)
     {
-
+        pthread_cond_wait(&condMutexQueue,&mutexQueue);
     }
+
+    pthread_mutex_unlock(&mutexQueue);
     farewell(clientconn);
 }
 
@@ -240,7 +242,6 @@ void order(pnodet* clientconn)
     char risposta[20];
     int quittiamo = 0;
     int oos = 0;
-    printf("PROVA\n");
     send(clientconn->socketc, menu,strlen(menu),0);
     while(quittiamo == 0)
     {
@@ -469,12 +470,12 @@ void welcome(void* client)
     }
     pthread_mutex_lock(&mutexQueue);
     clientconn->state = "WAITING";
-    pthread_mutex_unlock(&mutexQueue);
     //printf("%s\n", clientconn->state);
     while(strcmp(clientconn->state,"ORDERING")!=0)
     {
-
+        pthread_cond_wait(&condMutexQueue,&mutexQueue);
     }
+    pthread_mutex_unlock(&mutexQueue);
     order(clientconn);
     // close(clientconn->socketc);
     // pthread_kill(mainthread,SIGUSR1);
@@ -561,6 +562,7 @@ void checklist()
     removeDisconnected();
     checkwaiting();
     //printlist();
+    pthread_cond_broadcast(&condMutexQueue);
     pthread_mutex_unlock(&mutexQueue);
 }
 
@@ -603,6 +605,8 @@ int main()
     sprintf(creazione,"CREATE TABLE IF NOT EXISTS Elementi(Nome VARCHAR(50) PRIMARY KEY, prezzo DOUBLE PRECISION(7,4) NOT NULL )");
     mysql_query(con,creazione);
     signal(SIGPIPE,nada);
+
+    pthread_cond_init(&condMutexQueue,&mutexQueue);
 
     pnodet* node = NULL;
     mainthread = pthread_self();
