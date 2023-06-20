@@ -771,3 +771,61 @@ int main(int argc, char** args)
     }
 
 }
+
+/* debug
+launch.json 
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "C Debug",
+      "type": "cppdbg",
+      "request": "launch",
+      "program": "${workspaceFolder}/server",
+      "args": [],
+      "stopAtEntry": false,
+      "cwd": "${workspaceFolder}",
+      "environment": [],
+      "externalConsole": true,
+      "MIMode": "gdb",
+      "preLaunchTask": "build",
+      "setupCommands": [
+        {
+          "description": "Enable pretty-printing",
+          "text": "-enable-pretty-printing",
+          "ignoreFailures": true
+        },
+        {
+          "description": "Enable sudo",
+          "text": "shell sudo -S chmod +x ${workspaceFolder}/server",
+          "ignoreFailures": true,
+          "type": "shell"
+        }
+      ]
+    }
+  ]
+}
+
+tasks.json
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "build",
+      "type": "shell",
+      "command": "gcc",
+      "args": [
+        "-pthread",
+        "-o",
+        "${workspaceFolder}/server",
+        "${workspaceFolder}/server.c",
+        "$(mysql_config --libs)"
+      ],
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      }
+    }
+  ]
+}
+//
