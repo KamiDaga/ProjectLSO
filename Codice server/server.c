@@ -211,7 +211,7 @@ void serve(pnodet* clientconn, char* drink)
         {
             if(strcmp(risposta,"Si")==0)
             {
-                    //manda il tempo di preparazione al client
+                    //Gestione del flow di conversazione
             }
             else
             {
@@ -238,11 +238,52 @@ void serve(pnodet* clientconn, char* drink)
 
 void order(pnodet* clientconn)
 {
-    char* menu = "Negroni\nTequila Sunrise\nSex on the beach\nAperol Spritz\nPina colada\nMudslide\nEspress 75\nRum Manhattan\nNegroski\nMartini\nMojito\nCosmopolitan\nGin fizz\n";
+    char menu[500];
+    int countm = 0;
+    //contiene anche i tempi di preparazione e il prezzo
+    char menuClient[600];
+    int countmc = 0;
     char risposta[20];
     int quittiamo = 0;
     int oos = 0;
-    send(clientconn->socketc, menu,strlen(menu),0);
+    memset(menu,0,sizeof(menu));
+    sprintf(menu,"SELECT * FROM Elementi;");
+    pthread_mutex_lock(&mutexDb);
+    //estraggo il menu e creo le stringhe menu e menuClient
+    mysql_query(con,menu);
+    memset(menu,0,sizeof(menu));
+    memset(menuClient,0,sizeof(menuClient));
+    MYSQL_RES* result = mysql_store_result(con);
+    MYSQL_ROW row;
+    while((row = mysql_fetch_row(result)) != NULL)
+    {
+        int countr = 0;
+        for( ;row[0][countr]!= '\0'; countr++)
+        {
+            menu[countm++] = row[0][countr];
+            menuClient[countmc++] = row[0][countr];
+        }
+        menu[countm++] = '\n';
+        menuClient[countmc++] = '-';
+        countr = 0;
+        for( ; row[1][countr]!='\0';countr++)
+        {
+            menuClient[countmc++] = row[1][countr];
+        }
+        menuClient[countmc++] = '-';
+        countr = 0;
+        for( ; row[2][countr] != '\0'; countr++)
+        {
+            menuClient[countmc++] = row[2][countr];
+        } 
+        menuClient[countmc++] = '\n';
+    }
+    menu[countm] = '\0';
+    menuClient[countmc] = '\0';
+    pthread_mutex_unlock(&mutexDb);
+    printf("%s",menu);
+    printf("%s", menuClient);
+    send(clientconn->socketc, menuClient,strlen(menuClient),0);
     while(quittiamo == 0)
     {
         memset(risposta,0,sizeof(risposta));
@@ -293,7 +334,6 @@ void order(pnodet* clientconn)
                 char rispostaS[100];
                 memset(rispostaS,0,sizeof(rispostaS));
                 sprintf(rispostaS,"Ottima scelta!\n");
-                printf("Ottima scelta!\n");
                 send(clientconn->socketc, rispostaS,strlen(rispostaS),0);
                 quittiamo = 1;
             }
@@ -584,7 +624,7 @@ void nada()
 
 }
 
-int main()
+int main(int argc, char** args)
 {
     //Connessione al db
     con = mysql_init(NULL);
@@ -601,13 +641,27 @@ int main()
         exit(1);
     }
     char creazione[1000];
+    memset(creazione,0,sizeof(creazione));
     sprintf(creazione,"CREATE TABLE IF NOT EXISTS Utenti(username VARCHAR(21) PRIMARY KEY,password VARCHAR(13) NOT NULL,answer1 VARCHAR(100) NOT NULL, answer2 VARCHAR(100) NOT NULL)");
     mysql_query(con,creazione);
-    sprintf(creazione,"CREATE TABLE IF NOT EXISTS Elementi(Nome VARCHAR(50) PRIMARY KEY, prezzo DOUBLE PRECISION(7,4) NOT NULL )");
+    memset(creazione,0,sizeof(creazione));
+    sprintf(creazione,"CREATE TABLE IF NOT EXISTS Elementi(nome VARCHAR(50) PRIMARY KEY, prezzo DOUBLE PRECISION(7,4) NOT NULL,tempo SMALLINT UNSIGNED NOT NULL)");
     mysql_query(con,creazione);
+    memset(creazione,0,sizeof(creazione));
+    sprintf(creazione, "CREATE TABLE IF NOT EXISTS Domande(domanda VARCHAR(100) PRIMARY KEY, rispostaP VARCHAR(100) NOT NULL, rispostaN VARCHAR(100) NOT NULL, feedbackP VARCHAR(200) NOT NULL, feedbackN VARCHAR(200) NOT NULL, tag VARCHAR(20) NOT NULL)");
+    mysql_query(con,creazione);
+    if(argc == 2 && strcmp(args[1],"-d")==0)
+    {
+        memset(creazione,0,sizeof(creazione));
+        sprintf(creazione,"INSERT INTO Elementi(nome,prezzo,tempo) VALUES('Negroni',6.50,15),('Tequila Sunrise',7.20,10),('Sex on the beach',6,10),('Aperol Spritz',5,12),('Pina Colada',7,14),('Mudslide',6,10),('Empress 75',8,15),('Rum Manhattan',6,10),('Negroski',5,11),('Martini Bianco',6.5,10),('Martini Rosso',6.5,10),('Mojito',7,15),('Cosmopolitan',6.5,13),('Gin fizz',9,14);");
+        mysql_query(con,creazione);
+        memset(creazione,0,sizeof(creazione));
+        sprintf(creazione,"");
+        myqsl_query(con,creazione);
+    }
     signal(SIGPIPE,nada);
 
-    pthread_cond_init(&condMutexQueue,&mutexQueue);
+    pthread_cond_init(&condMutexQueue,NULL);
 
     pnodet* node = NULL;
     mainthread = pthread_self();
