@@ -68,6 +68,11 @@ public class LoginActivity extends AppCompatActivity {
                 String username = editTextUsername.getText().toString();
                 String password = editTextPassword.getText().toString();
 
+                if (username.isEmpty() || password.isEmpty()){
+                    AlertBuilder.buildAlertSingoloBottone(LoginActivity.this, "Attenzione!", "Riempire tutti i campi di inserimento");
+                    return;
+                }
+
                 if (username.length() > 20 || password.length() > 12 || username.contains("-") || password.contains("-")) {
                     AlertBuilder.buildAlertSingoloBottone(LoginActivity.this, "Attenzione!", "Lo username o la password inserite non rispettano i giusti criteri." +
                             "\nAssicurarsi che:\nLo username abbia massimo 20 caratteri e non contenga '-'\nLa password abbia massimo 12 caratteri e non contenga '-'");

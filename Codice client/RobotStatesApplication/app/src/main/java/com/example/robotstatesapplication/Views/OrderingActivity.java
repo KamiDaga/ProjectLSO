@@ -4,8 +4,11 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.ColorStateList;
+import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.view.View;
@@ -48,7 +51,7 @@ public class OrderingActivity extends AppCompatActivity {
 
         for (Drink drink : listaDrink) {
             RadioButton radioDrinkCorrente = new RadioButton(OrderingActivity.this);
-            radioDrinkCorrente.setText(drink.getNome());
+            radioDrinkCorrente.setText(drink.getNome() + " - " + drink.getPrezzo() + "€");
             radioDrinkCorrente.setTextColor(getResources().getColor(R.color.blu_scuro));
             radioDrinkCorrente.setBackgroundResource(R.drawable.radiobuttons_bg);
             radioDrinkCorrente.setButtonTintList(ColorStateList.valueOf(getResources().getColor(R.color.blu_scuro)));
@@ -62,7 +65,7 @@ public class OrderingActivity extends AppCompatActivity {
         gruppoRadioDrink.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(RadioGroup group, int checkedId) {
-                drinkScelto = listaDrink.get(checkedId);
+                drinkScelto = listaDrink.get(checkedId-1);
             }
         });
 
@@ -80,10 +83,7 @@ public class OrderingActivity extends AppCompatActivity {
                     } catch (InterruptedException e) {
                         AlertBuilder.buildAlertSingoloBottone(OrderingActivity.this, "Errore!", "C'è stato un errore, riprovare!");
                     }
-                    Intent i = new Intent(OrderingActivity.this, ServingActivityInteracting.class);
-                    i.putExtra("DRINK", drinkScelto.getNome());
-                    i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                    startActivity(i);
+                    creaDialogSceltaConversazione();
                 }
                 else {
                     AlertBuilder.buildAlertSingoloBottone(OrderingActivity.this, "Attenzione!", "Non è stato selezionato alcun drink!");
@@ -132,6 +132,41 @@ public class OrderingActivity extends AppCompatActivity {
                 startActivity(i);
             }
         });
+    }
+
+    private void creaDialogSceltaConversazione() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(OrderingActivity.this);
+        builder.setTitle("Scegli per proseguire");
+        builder.setMessage("Nell'attesa ti va di conversare con il robot?")
+                .setCancelable(false)
+                .setPositiveButton("Sì", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.cancel();
+                        Intent i = new Intent(OrderingActivity.this, ServingActivityInteracting.class);
+                        i.putExtra("DRINK", drinkScelto);
+                        i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                        startActivity(i);
+                    }
+                })
+                .setNeutralButton("No", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.cancel();
+                        Intent i = new Intent(OrderingActivity.this, ServingActivityNotInteracting.class);
+                        i.putExtra("DRINK", drinkScelto);
+                        i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                        startActivity(i);
+                    }
+                });
+        AlertDialog alert = builder.create();
+        alert.show();
+        Button siButton = alert.getButton(DialogInterface.BUTTON_POSITIVE);
+        siButton.setBackgroundColor(Color.parseColor("#0E0D57"));
+        siButton.setTextColor(Color.parseColor("#FFFFFF"));
+        Button noButton = alert.getButton(DialogInterface.BUTTON_NEUTRAL);
+        noButton.setBackgroundColor(Color.parseColor("#FFFFFF"));
+        noButton.setTextColor(Color.parseColor("#0E0D57"));
     }
 
 }

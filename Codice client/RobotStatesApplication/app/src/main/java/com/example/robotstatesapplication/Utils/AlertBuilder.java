@@ -6,7 +6,10 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
+import android.widget.Button;
 
+import com.example.robotstatesapplication.R;
 import com.example.robotstatesapplication.Views.QuestionarioDrinkActivity;
 import com.example.robotstatesapplication.Views.QuestionarioHobbyActivity;
 
@@ -28,21 +31,10 @@ public class AlertBuilder {
                     });
             AlertDialog alert = builder.create();
             alert.show();
+            Button OkButton = alert.getButton(DialogInterface.BUTTON_POSITIVE);
+            OkButton.setBackgroundColor(Color.parseColor("#0E0D57"));
+            OkButton.setTextColor(Color.parseColor("#FFFFFF"));
         }
     }
 
-    public static void mostraAlertAttesaCaricamento(Context context) {
-        if (context != null) {
-            AlertDialog.Builder builder = new AlertDialog.Builder(context);
-            builder.setTitle("Caricamento...");
-            builder.setMessage("Attendere prego");
-            builder.setCancelable(false);
-            dialogAttesa = builder.create();
-            dialogAttesa.show();
-        }
-    }
-
-    public static void nascondiAlertAttesaCaricamento() {
-        dialogAttesa.dismiss();
-    }
 }

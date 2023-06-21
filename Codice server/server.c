@@ -194,7 +194,7 @@ void conversation(pnodet* clientconn)
         memset(domanda,0,sizeof(domanda));
         // char* rispostaS = "Dimmi un argomento!";
         // send(clientconn->socketc, rispostaS,strlen(rispostaS),0);
-        
+
         if(read(clientconn->socketc,rispostain,sizeof(rispostain))==0)
         {
             strcpy(rispostain,"gone");
@@ -205,7 +205,7 @@ void conversation(pnodet* clientconn)
             fineDialogo = 1;
         else if(strcmp(rispostain,"inizio")==0)//Le domande vengono mandate al client nella forma
                                             //DOMANDA/RISPOSTAP/RISPOSTAN/FEEDBACKP/FEEDBACKN
-        {  
+        {
             strcpy(domanda,"Ciao! Com'e' andata la tua giornata? Spero tutto bene./E' stata abbastanza tranquilla./E' stata un disastro./Mi fa piacere! Spero per te che continui cosi!/Mi dispiace! Spero di riuscire ad alleggeriri la giornata!");
             send(clientconn->socketc, domanda,strlen(domanda),0);
         }
@@ -234,7 +234,7 @@ void conversation(pnodet* clientconn)
                 row = mysql_fetch_row(res);
             }
             // else row = mysql_fetch_row(res);
-            
+
             sprintf(domanda,"%s/%s/%s/%s/%s",row[0],row[1],row[2],row[3],row[4]);
             mysql_free_result(res);
             send(clientconn->socketc, domanda,strlen(domanda),0);
@@ -266,21 +266,29 @@ void serve(pnodet* clientconn, char* drink)
             prepare = 0;
             quittiamo = 1;
         }
-        else if(strcmp(risposta,"oos")==0)
+        if(strstr(risposta,"oos") != NULL)
         {
-            char* rispostaS = prepare == 1 ? "A piu tardi!\n" : "Bentornato!";
-            send(clientconn->socketc, rispostaS,strlen(rispostaS),0);
-            prepare = prepare==1 ?  0 : 1;
+            int what_len = strlen("oos");
+            int count = 0;
+
+            char *where = risposta;
+
+            while ((where = strstr(where, "oos"))) {
+                where += what_len;
+                count++;
+            }
+
+            prepare = (count+1)%2;
         }
         else if(prepare ==1)
         {
             if(strcmp(risposta,"si")==0)
-            { 
+            {
                 gochat = 1;
                 quittiamo = 1;
             }
         }
-        else 
+        else
         {
             //niente siccome e' un comando inesistente, ne aspettiamo un'altro
         }
@@ -356,7 +364,7 @@ void order(pnodet* clientconn)
         for( ; row[2][countr] != '\0'; countr++)
         {
             menuClient[countmc++] = row[2][countr];
-        } 
+        }
         menuClient[countmc++] = '\n';
     }
     menu[countm] = '\0';
@@ -370,16 +378,23 @@ void order(pnodet* clientconn)
         if(read(clientconn->socketc,risposta,sizeof(risposta))==0)
             strcpy(risposta,"gone");
 
-        if(strcmp(risposta,"oos")==0)
+        if(strstr(risposta,"oos") != NULL)
         {
-            char* rispostaS = oos == 0? "A piu tardi!\n" : "Bentornato!\n";
-            send(clientconn->socketc, rispostaS,strlen(rispostaS),0);
-            oos = oos==0? 1 : 0;
+            int what_len = strlen("oos");
+            int count = 0;
+
+            char *where = risposta;
+
+            while ((where = strstr(where, "oos"))) {
+                where += what_len;
+                count++;
+            }
+
+            oos = (count+oos)%2;
         }
         else if(strcmp(risposta,"gone")==0)
         {
             char* rispostaS = "Arrivederci!\n";
-            send(clientconn->socketc, rispostaS,strlen(rispostaS),0);
             quittiamo = 1;
         }
         else if(oos==0)
@@ -519,9 +534,7 @@ void welcome(void* client)
             {
                 memset(query,0,sizeof(query));
                 sprintf(query,"INSERT INTO Utenti(username,password,answer1,answer2) VALUES ('%s','%s','%s','%s');",username,password,ans1,ans2);
-                pthread_mutex_lock(&mutexDb);
                 mysql_query(con,query);
-                pthread_mutex_unlock(&mutexDb);
                 memset(risposta,0,sizeof(risposta));
                 strcpy(risposta,"Utente registrato con successo! Effettua il login.\n");
                 send(clientconn->socketc, risposta,strlen(risposta),0);

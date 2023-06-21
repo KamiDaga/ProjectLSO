@@ -20,12 +20,17 @@ import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.example.robotstatesapplication.R;
+import com.example.robotstatesapplication.Utils.AlertBuilder;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
+import java.util.concurrent.TimeUnit;
 
 public class RegistrazioneActivity extends AppCompatActivity {
 
-    private Spinner spinnerSesso;
     private Button bottoneAvanti, bottoneIndietro;
     private ImageView bottoneCalendario;
     private DatePickerDialog datePicker;
@@ -44,7 +49,6 @@ public class RegistrazioneActivity extends AppCompatActivity {
 
         setContentView(R.layout.activity_registrazione);
 
-        spinnerSesso = findViewById(R.id.spinnerSessoRegistrazione);
         bottoneAvanti = findViewById(R.id.bottoneInizioQuestionario);
         bottoneIndietro = findViewById(R.id.bottoneAnnullaRegistrazione);
         bottoneCalendario = findViewById(R.id.iconaCalendarioRegistrazione);
@@ -56,12 +60,6 @@ public class RegistrazioneActivity extends AppCompatActivity {
         editTextPassword = findViewById(R.id.editTextPasswordRegistrazione);
         editTextConferma = findViewById(R.id.editTextConfermaPasswordRegistrazione);
 
-        String[] sessi = new String[]{"M", "F"};
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(RegistrazioneActivity.this, R.layout.spinner_layout, sessi);
-        adapter.setDropDownViewResource(R.layout.spinner_item_layout);
-        spinnerSesso.setAdapter(adapter);
-
-        Calendar calendar = Calendar.getInstance();
         mostraData();
         datePicker = new DatePickerDialog(RegistrazioneActivity.this, new DatePickerDialog.OnDateSetListener() {
             @Override
@@ -75,7 +73,31 @@ public class RegistrazioneActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 String username = editTextUsername.getText().toString();
-                String password = editTextConferma.getText().toString();
+                String password = editTextPassword.getText().toString();
+                String conferma = editTextConferma.getText().toString();
+                String dataNascita = editTextDataNascita.getText().toString();
+                long differenzaDaNascita = Calendar.getInstance().get(Calendar.YEAR) - calendario.get(Calendar.YEAR);
+                if (Calendar.getInstance().get(Calendar.MONTH) < calendario.get(Calendar.MONTH) ||
+                        (Calendar.getInstance().get(Calendar.MONTH) == calendario.get(Calendar.MONTH) && Calendar.getInstance().get(Calendar.DATE) < calendario.get(Calendar.DATE))) {
+                    differenzaDaNascita--;
+                }
+                if (!conferma.equals(password)) {
+                    AlertBuilder.buildAlertSingoloBottone(RegistrazioneActivity.this, "Attenzione!", "La password non coincide con la sua conferma");
+                    return;
+                }
+                if (username.isEmpty() || password.isEmpty() || dataNascita. isEmpty()){
+                    AlertBuilder.buildAlertSingoloBottone(RegistrazioneActivity.this, "Attenzione!", "Riempire tutti i campi di inserimento");
+                    return;
+                }
+                if (username.length() > 20 || password.length() > 12 || username.contains("-") || password.contains("-")) {
+                    AlertBuilder.buildAlertSingoloBottone(RegistrazioneActivity.this, "Attenzione!", "Lo username o la password inserite non rispettano i giusti criteri." +
+                            "\nAssicurarsi che:\nLo username abbia massimo 20 caratteri e non contenga '-'\nLa password abbia massimo 12 caratteri e non contenga '-'");
+                    return;
+                }
+                if (differenzaDaNascita < 18) {
+                    AlertBuilder.buildAlertSingoloBottone(RegistrazioneActivity.this, "Attenzione!", "Qui vendiamo solo alcolici, non sono ammessi minorenni!");
+                    return;
+                }
                 Intent i = new Intent(RegistrazioneActivity.this, QuestionarioDrinkActivity.class);
                 i.putExtra("USERNAME", username);
                 i.putExtra("PASSWORD", password);
@@ -116,7 +138,7 @@ public class RegistrazioneActivity extends AppCompatActivity {
 
 
     private void mostraData() {
-        dateView.setText(new StringBuilder().append(calendario.get(Calendar.DAY_OF_MONTH)).append(" / ").append(calendario.get(Calendar.MONTH)).append(" / ").append(calendario.get(Calendar.YEAR)));
+        dateView.setText(new StringBuilder().append(calendario.get(Calendar.DAY_OF_MONTH)).append(" / ").append((calendario.get(Calendar.MONTH))+1).append(" / ").append(calendario.get(Calendar.YEAR)));
     }
 
     private void mostraNascondiPassword(EditText et, ImageView iv) {

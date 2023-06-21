@@ -31,6 +31,8 @@ public class QuestionarioHobbyActivity extends AppCompatActivity {
     private Button bottoneIndietro;
     private Map<Hobby, Boolean> hobbies = new HashMap<>();
 
+    String rispostaServer;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -94,27 +96,28 @@ public class QuestionarioHobbyActivity extends AppCompatActivity {
 
                     Intent i = new Intent(QuestionarioHobbyActivity.this, LoginActivity.class);
                     i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                    Handler handler = new Handler();
                     Thread threadSocket = new Thread(()->{
                         SocketSingleton.getInstance().getSocketOut().print(
                                 "registerer-"+getIntent().getStringExtra("USERNAME")+"-"+getIntent().getStringExtra("PASSWORD")+
                                         "-"+getIntent().getStringExtra("DRINK")+"-"+formaStringaHobby(hobbyScelti));
                         SocketSingleton.getInstance().getSocketOut().flush();
                         try {
-                            Log.i("INPUT", SocketSingleton.getInstance().getSocketIn().readLine());
+                            rispostaServer = SocketSingleton.getInstance().getSocketIn().readLine();
                         } catch (IOException e) {
-                            AlertBuilder.buildAlertSingoloBottone(QuestionarioHobbyActivity.this, "Errore!", "C'è stato un errore di comunicazione, riprovare!");
+                            handler.post(()->AlertBuilder.buildAlertSingoloBottone(QuestionarioHobbyActivity.this, "Errore!", "C'è stato un errore di comunicazione, riprovare!"));
                         }
                     });
-                    AlertBuilder.mostraAlertAttesaCaricamento(QuestionarioHobbyActivity.this);
                     threadSocket.start();
                     try {
                         threadSocket.join();
                     } catch (InterruptedException e) {
                         AlertBuilder.buildAlertSingoloBottone(QuestionarioHobbyActivity.this, "Errore!", "C'è stato un errore, riprovare!");
-                    } finally {
-                        AlertBuilder.nascondiAlertAttesaCaricamento();
                     }
-                    startActivity(i);
+                    if (rispostaServer.startsWith("Esiste"))
+                        AlertBuilder.buildAlertSingoloBottone(QuestionarioHobbyActivity.this, "Attenzione!", "Esiste un altro utente con questo username!");
+                    else
+                        startActivity(i);
                 }
 
             }

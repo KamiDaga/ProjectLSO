@@ -47,10 +47,16 @@ public class WaitingActivity extends AppCompatActivity {
 
         Handler threadHandler = new Handler();
         Thread threadSocket = new Thread(()-> {
+            String formatoDrink = null;
+            String[] splitDrink = null;
             try {
-                menù.add(new Drink(SocketSingleton.getInstance().getSocketIn().readLine()));
+                formatoDrink = SocketSingleton.getInstance().getSocketIn().readLine();
+                splitDrink = formatoDrink.split("-");
+                menù.add(new Drink(splitDrink[0], Double.parseDouble(splitDrink[1]), Integer.parseInt(splitDrink[2])));
                 while (SocketSingleton.getInstance().getSocketIn().ready()) {
-                    menù.add(new Drink(SocketSingleton.getInstance().getSocketIn().readLine()));
+                    formatoDrink = SocketSingleton.getInstance().getSocketIn().readLine();
+                    splitDrink = formatoDrink.split("-");
+                    menù.add(new Drink(splitDrink[0], Double.parseDouble(splitDrink[1]), Integer.parseInt(splitDrink[2])));
                 }
                 synchronized (menù) {
                     while (outOfSight)
@@ -62,7 +68,8 @@ public class WaitingActivity extends AppCompatActivity {
                     });
                 }
             } catch (Exception e) {
-                threadHandler.post(()->AlertBuilder.buildAlertSingoloBottone(WaitingActivity.this, "Errore!", "C'è stato un errore di comunicazione, riprovare!"));
+                threadHandler.post(()->AlertBuilder.buildAlertSingoloBottone(WaitingActivity.this, "Errore!", "C'è stato un errore di comunicazione, riprovare!" + e.getMessage()));
+                Log.i("STRINGHE", splitDrink[0].toString());
             }
         });
         threadSocket.start();

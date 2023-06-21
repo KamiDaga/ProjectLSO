@@ -10,12 +10,20 @@ public class Drink implements Serializable {
     private String nome;
     private CaratteristicaDrinkEnum caratteristica;
     private String alcol;
+    private double prezzo;
+    private int tempoPreparazione;
 
     public Drink(ImageView icona, String nome, CaratteristicaDrinkEnum caratteristica, String alcol) {
         this.icona = icona;
         this.nome = nome;
         this.caratteristica = caratteristica;
         this.alcol = alcol;
+    }
+
+    public Drink(String nome, double prezzo, int tempoPreparazione) {
+        this.nome = nome;
+        this.prezzo = prezzo;
+        this.tempoPreparazione = tempoPreparazione;
     }
 
     public Drink(String nome) {
@@ -57,5 +65,21 @@ public class Drink implements Serializable {
     @Override
     public String toString() {
         return nome;
+    }
+
+    public double getPrezzo() {
+        return prezzo;
+    }
+
+    public void setPrezzo(double prezzo) {
+        this.prezzo = prezzo;
+    }
+
+    public int getTempoPreparazione() {
+        return tempoPreparazione;
+    }
+
+    public void setTempoPreparazione(int tempoPreparazione) {
+        this.tempoPreparazione = tempoPreparazione;
     }
 }
