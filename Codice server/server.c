@@ -182,6 +182,67 @@ void farewell(pnodet* clientconn)
 
 }
 
+void conversation(pnodet* clientconn)
+{
+    int fineDialogo = 0;
+    while(fineDialogo == 0)
+    {
+        char domanda[500];
+        char query[150];
+        char rispostain[40];
+        memset(rispostain,0,sizeof(rispostain));
+        memset(domanda,0,sizeof(domanda));
+        // char* rispostaS = "Dimmi un argomento!";
+        // send(clientconn->socketc, rispostaS,strlen(rispostaS),0);
+        
+        if(read(clientconn->socketc,rispostain,sizeof(rispostain))==0)
+        {
+            strcpy(rispostain,"gone");
+        }
+
+        printf("Risposta: %s!\n",rispostain);
+        if(strcmp(rispostain,"gone") == 0)
+            fineDialogo = 1;
+        else if(strcmp(rispostain,"inizio")==0)//Le domande vengono mandate al client nella forma
+                                            //DOMANDA/RISPOSTAP/RISPOSTAN/FEEDBACKP/FEEDBACKN
+        {  
+            strcpy(domanda,"Ciao! Com'e' andata la tua giornata? Spero tutto bene./E' stata abbastanza tranquilla./E' stata un disastro./Mi fa piacere! Spero per te che continui cosi!/Mi dispiace! Spero di riuscire ad alleggeriri la giornata!");
+            send(clientconn->socketc, domanda,strlen(domanda),0);
+        }
+        else if(strcmp(rispostain,"fine")==0) //La domanda finale non verra' risposta. Quindi mando DOMANDA////
+        {
+            strcpy(domanda,"Il tuo drink e' pronto. Spero di non essermi distratto troppo mentre parlavo con te. A presto!////");
+            send(clientconn->socketc, domanda,strlen(domanda),0);
+            fineDialogo=1;
+        }
+        else if (strlen(rispostain)==0)
+        {}
+        else //abbiamo un tag
+        {
+            sprintf(query,"SELECT domanda,rispostaP,rispostaN,feedbackP,feedbackN FROM Domande WHERE tag = '%s' ORDER BY RAND();",rispostain);
+            pthread_mutex_lock(&mutexDb);
+            mysql_query(con,query);
+            MYSQL_RES* res = mysql_store_result(con);
+            MYSQL_ROW row;
+            if((row = mysql_fetch_row(res))==NULL) //se non si e' trovato nulla
+            {
+                mysql_free_result(res);
+                memset(query,0,sizeof(query));
+                sprintf(query,"SELECT domanda,rispostaP,rispostaN,feedbackP,feedbackN FROM Domande ORDER BY RAND();");
+                mysql_query(con,query);
+                res = mysql_store_result(con);
+                row = mysql_fetch_row(res);
+            }
+            // else row = mysql_fetch_row(res);
+            
+            sprintf(domanda,"%s/%s/%s/%s/%s",row[0],row[1],row[2],row[3],row[4]);
+            mysql_free_result(res);
+            send(clientconn->socketc, domanda,strlen(domanda),0);
+            pthread_mutex_unlock(&mutexDb);
+        }
+    }
+}
+
 void serve(pnodet* clientconn, char* drink)
 {
     char* request = "Ottima scelta!\nMentre preparo il tuo drink, ti andrebbe una chiacchierata?\n";
@@ -189,6 +250,7 @@ void serve(pnodet* clientconn, char* drink)
     char risposta[20];
     int prepare = 1;
     int quittiamo = 0;
+    int gochat = 0;
     send(clientconn->socketc, request,strlen(request),0);
     while(quittiamo == 0)
     {
@@ -210,74 +272,38 @@ void serve(pnodet* clientconn, char* drink)
             send(clientconn->socketc, rispostaS,strlen(rispostaS),0);
             prepare = prepare==1 ?  0 : 1;
         }
-        else if(prepare == 1 && strcmp(risposta,"oos")!=0)
+        else if(prepare ==1)
         {
             if(strcmp(risposta,"si")==0)
-            {
-                    while(quittiamo == 0)
-                    {
-                        char domanda[500];
-                        char query[150];
-                        char rispostain[40];
-                        memset(risposta,0,sizeof(rispostain));
-                        memset(domanda,0,sizeof(domanda));
-                        char* rispostaS = "Dimmi un argomento!";
-                        send(clientconn->socketc, rispostaS,strlen(rispostaS),0);
-                        if(read(clientconn->socketc,rispostain,sizeof(rispostain))==0)
-                        {
-                            strcpy(rispostain,"gone");
-                        }
+            { 
+                gochat = 1;
+                quittiamo = 1;
+            }
+        }
+        else 
+        {
+            //niente siccome e' un comando inesistente, ne aspettiamo un'altro
+        }
+    }
 
-                        printf("Risposta: %s!\n",rispostain);
-                        if(strcmp(rispostain,"gone") == 0)
-                            quittiamo = 1;
-                        else if(strcmp(rispostain,"inizio")==0)//Le domande vengono mandate al client nella forma
-                                                            //DOMANDA/RISPOSTAP/RISPOSTAN/FEEDBACKP/FEEDBACKN
-                        {  
-                            strcpy(domanda,"Ciao! Com'e' andata la tua giornata? Spero tutto bene./E' stata abbastanza tranquilla./E' stata un disastro./Mi fa piacere! Spero per te che continui cosi!/Mi dispiace! Spero di riuscire ad alleggeriri la giornata!");
-                            send(clientconn->socketc, domanda,strlen(domanda),0);
-                        }
-                        else if(strcmp(rispostain,"fine")==0) //La domanda finale non verra' risposta. Quindi mando DOMANDA////
-                        {
-                            strcpy(domanda,"Il tuo drink e' pronto. Spero di non essermi distratto troppo mentre parlavo con te. A presto!////");
-                            send(clientconn->socketc, domanda,strlen(domanda),0);
-                            quittiamo = 1;
-                        }
-                        else //abbiamo un tag
-                        {
-                            sprintf(query,"SELECT domanda,rispostaP,rispostaN,feedbackP,feedbackN FROM Domande WHERE tag = '%s' ORDER BY RAND();",rispostain);
-                            pthread_mutex_lock(&mutexDb);
-                            mysql_query(con,query);
-                            MYSQL_RES* res = mysql_store_result(con);
-                            MYSQL_ROW row;
-                            if((row = mysql_fetch_row(res))==NULL) //se non si e' trovato nulla
-                            {
-                                mysql_free_result(res);
-                                memset(query,0,sizeof(query));
-                                sprintf(query,"SELECT domanda,rispostaP,rispostaN,feedbackP,feedbackN FROM Domande ORDER BY RAND();");
-                                mysql_query(con,query);
-                                res = mysql_store_result(con);
-                                row = mysql_fetch_row(res);
-                            }
-                            // else row = mysql_fetch_row(res);
-                            
-                            sprintf(domanda,"%s/%s/%s/%s/%s",row[0],row[1],row[2],row[3],row[4]);
-                            mysql_free_result(res);
-                            send(clientconn->socketc, domanda,strlen(domanda),0);
-                            pthread_mutex_unlock(&mutexDb);
-                        }
-                    }
-            }
-            else
+    if(prepare ==1) //controlliamo non sia andato via o non si sia disconnesso
+    {
+        if(gochat == 1)
+        {
+            // printf("Yuhuuu\n");
+            read(clientconn->socketc,risposta,sizeof(risposta));
+            read(clientconn->socketc,risposta,sizeof(risposta));
+            read(clientconn->socketc,risposta,sizeof(risposta));
+            conversation(clientconn);
+        }
+        else
+        {
+            memset(risposta,0,sizeof(risposta));
+            if(read(clientconn->socketc,risposta,sizeof(risposta))==0) //Essenzialmente il client dice al server che ha finito
+                                                                    //Non importa il contenuto di risposta.
             {
-                memset(risposta,0,sizeof(risposta));
-                if(read(clientconn->socketc,risposta,sizeof(risposta))==0) //Essenzialmente il client dice al server che ha finito
-                                                                        //Non importa il contenuto di risposta.
-                {
-                    strcpy(risposta,"gone"); //Neanche in questo caso, e' solo per readability del codice
-                }
+                strcpy(risposta,"gone"); //Neanche in questo caso, e' solo per readability del codice
             }
-            quittiamo = 1;
         }
     }
     pthread_mutex_lock(&mutexQueue);
@@ -691,7 +717,7 @@ int main(int argc, char** args)
         exit(1);
     }
     //Scherzavo questa e' la vera connessione
-    if(mysql_real_connect(con,NULL,NULL,"","robottino",0,NULL,0)==NULL)
+    if(mysql_real_connect(con,NULL,"a","a","robottino",0,NULL,0)==NULL)
     {
         fprintf(stderr,"Errore durante la connessione al db:%s\n",mysql_error(con));
         exit(1);
@@ -771,61 +797,3 @@ int main(int argc, char** args)
     }
 
 }
-
-/* debug
-launch.json 
-{
-  "version": "0.2.0",
-  "configurations": [
-    {
-      "name": "C Debug",
-      "type": "cppdbg",
-      "request": "launch",
-      "program": "${workspaceFolder}/server",
-      "args": [],
-      "stopAtEntry": false,
-      "cwd": "${workspaceFolder}",
-      "environment": [],
-      "externalConsole": true,
-      "MIMode": "gdb",
-      "preLaunchTask": "build",
-      "setupCommands": [
-        {
-          "description": "Enable pretty-printing",
-          "text": "-enable-pretty-printing",
-          "ignoreFailures": true
-        },
-        {
-          "description": "Enable sudo",
-          "text": "shell sudo -S chmod +x ${workspaceFolder}/server",
-          "ignoreFailures": true,
-          "type": "shell"
-        }
-      ]
-    }
-  ]
-}
-
-tasks.json
-{
-  "version": "2.0.0",
-  "tasks": [
-    {
-      "label": "build",
-      "type": "shell",
-      "command": "gcc",
-      "args": [
-        "-pthread",
-        "-o",
-        "${workspaceFolder}/server",
-        "${workspaceFolder}/server.c",
-        "$(mysql_config --libs)"
-      ],
-      "group": {
-        "kind": "build",
-        "isDefault": true
-      }
-    }
-  ]
-}
-//
