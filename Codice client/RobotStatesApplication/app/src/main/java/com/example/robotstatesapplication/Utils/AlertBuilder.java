@@ -13,6 +13,8 @@ import com.example.robotstatesapplication.R;
 import com.example.robotstatesapplication.Views.QuestionarioDrinkActivity;
 import com.example.robotstatesapplication.Views.QuestionarioHobbyActivity;
 
+import java.util.logging.Handler;
+
 public class AlertBuilder {
 
     private static Dialog dialogAttesa;

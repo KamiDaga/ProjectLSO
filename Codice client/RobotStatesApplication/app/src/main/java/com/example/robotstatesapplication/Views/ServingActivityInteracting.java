@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewTreeObserver;
 import android.view.Window;
@@ -14,11 +15,15 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.example.robotstatesapplication.Models.Drink;
 import com.example.robotstatesapplication.Models.Messaggio;
+import com.example.robotstatesapplication.Models.SocketSingleton;
 import com.example.robotstatesapplication.Models.UtenteEnum;
 import com.example.robotstatesapplication.R;
+import com.example.robotstatesapplication.Utils.AlertBuilder;
 import com.example.robotstatesapplication.Utils.ListaMessaggiAdapter;
 
+import java.io.IOException;
 import java.util.ArrayList;
 
 public class ServingActivityInteracting extends AppCompatActivity {
@@ -30,8 +35,12 @@ public class ServingActivityInteracting extends AppCompatActivity {
     private ListaMessaggiAdapter adapterChat;
     private View viewRoot;
     private TextView tvContatore;
+    private Drink drinkCorrente;
     private int tempoDrink;
     private Button bottoneOutOfSight;
+    private boolean outOfSight;
+    private Object lockOOS = new Object();
+    private boolean serveNuovoMessaggio;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,8 +58,8 @@ public class ServingActivityInteracting extends AppCompatActivity {
         tvContatore = findViewById(R.id.contatoreServingInteracting);
         bottoneOutOfSight = findViewById(R.id.bottoneOutOfSightServingInteracting);
 
-        chat.add(new Messaggio("Ciao, sono il Robot", UtenteEnum.ROBOT));
-        attivaGestioneContatore();
+        drinkCorrente = (Drink)getIntent().getSerializableExtra("DRINK");
+        tempoDrink = drinkCorrente.getTempoPreparazione();
 
         adapterChat = new ListaMessaggiAdapter(ServingActivityInteracting.this, chat);
         rvChat.setAdapter(adapterChat);
@@ -68,41 +77,6 @@ public class ServingActivityInteracting extends AppCompatActivity {
             }
         });
 
-        bottonePositivo.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                chat.add(new Messaggio("Risposta positiva", UtenteEnum.UTENTE));
-                adapterChat.notifyItemInserted(chat.size()-1);
-                Handler handler = new Handler();
-
-                handler.postDelayed(new Runnable()
-                {
-                    public void run()
-                    {
-                        chat.add(new Messaggio("Il robot ti ascolta", UtenteEnum.ROBOT));
-                        adapterChat.notifyItemInserted(chat.size()-1);
-                    }
-                }, 1000);
-            }
-        });
-
-        bottoneNegativo.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                chat.add(new Messaggio("Risposta negativa", UtenteEnum.UTENTE));
-                adapterChat.notifyItemInserted(chat.size()-1);
-                Handler handler = new Handler();
-
-                handler.postDelayed(new Runnable()
-                {
-                    public void run()
-                    {
-                        chat.add(new Messaggio("Il robot ti ascolta", UtenteEnum.ROBOT));
-                        adapterChat.notifyItemInserted(chat.size()-1);
-                    }
-                }, 1000);
-            }
-        });
 
         bottoneOutOfSight.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -112,12 +86,80 @@ public class ServingActivityInteracting extends AppCompatActivity {
             }
         });
 
+
+        attivaGestioneComunicazione();
+
     }
 
-    private void attivaGestioneContatore() {
-        tempoDrink = 30;
+    private void attivaGestioneComunicazione() {
         tvContatore.setText(String.valueOf(tempoDrink));
         Handler handlerContatore = new Handler();
+        Handler handlerMessaggi = new Handler();
+        Handler handler = new Handler();
+        Thread threadMessaggi = new Thread(()->{
+            int counter = 1;
+            String richiesta = null;
+            handlerMessaggi.post(() -> {
+                bottonePositivo.setText("");
+                bottoneNegativo.setText("");
+                bottonePositivo.setClickable(false);
+                bottoneNegativo.setClickable(false);
+            });
+            while (!Thread.currentThread().isInterrupted()) {
+                if (counter == 1)
+                    richiesta = "inizio";
+                else
+                    richiesta = "caso";
+
+                SocketSingleton.getInstance().getSocketOut().print(richiesta);
+                SocketSingleton.getInstance().getSocketOut().flush();
+                Log.i("CIAO", "CIAO");
+                try {
+                    String cicloConversazione = SocketSingleton.getInstance().getSocketIn().readLine();
+                    String setCiclo [] = cicloConversazione.split("/");
+                    Log.i("CONV", cicloConversazione);
+                    synchronized (chat) {
+                        handlerMessaggi.post(() -> cicloUIMessaggi(setCiclo[0], setCiclo[1], setCiclo[2], setCiclo[3], setCiclo[4]));
+                        while (!serveNuovoMessaggio)
+                            chat.wait();
+                        serveNuovoMessaggio = false;
+                        Thread.sleep(2000);
+                    }
+
+                } catch (IOException e) {
+                    handler.post(()->AlertBuilder.buildAlertSingoloBottone(ServingActivityInteracting.this, "Errore!", "C'è stato un errore di comunicazione, chiudere l'applicazione."));
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                }
+                counter++;
+            }
+            SocketSingleton.getInstance().getSocketOut().print("fine");
+            SocketSingleton.getInstance().getSocketOut().flush();
+            try {
+                String cicloConversazione = SocketSingleton.getInstance().getSocketIn().readLine();
+                String setCiclo [] = cicloConversazione.split("/");
+                handlerMessaggi.post(()->{
+                    synchronized (chat) {
+                        chat.add(new Messaggio(setCiclo[0], UtenteEnum.ROBOT));
+                        adapterChat.notifyItemInserted(chat.size() - 1);
+                        bottonePositivo.setClickable(true);
+                        bottonePositivo.setText("Avanti");
+                        bottoneNegativo.setText("");
+                        bottoneNegativo.setClickable(false);
+                        bottonePositivo.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                Intent i = new Intent(ServingActivityInteracting.this, FarewellingActivity.class);
+                                i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                                startActivity(i);
+                            }
+                        });
+                    }
+                });
+            } catch (IOException e) {
+                handler.post(()->AlertBuilder.buildAlertSingoloBottone(ServingActivityInteracting.this, "Errore!", "C'è stato un errore di comunicazione, chiudere l'applicazione."));
+            }
+        });
         Thread threadContatore = new Thread(new Runnable() {
             @Override
             public void run() {
@@ -136,15 +178,104 @@ public class ServingActivityInteracting extends AppCompatActivity {
                     });
                 }
 
+                synchronized (lockOOS) {
+                    while (outOfSight) {
+                        try {
+                            lockOOS.wait();
+                        } catch (InterruptedException e) {
+                            handlerContatore.post(()->AlertBuilder.buildAlertSingoloBottone(ServingActivityInteracting.this, "Errore!", "C'è stato un errore di comunicazione, riprovare!" + e.getMessage()));
+                        }
+                    }
+                    threadMessaggi.interrupt();
+                }
+
             }
         });
         threadContatore.start();
+        threadMessaggi.start();
+    }
+
+    @Override
+    public void onStart() {
+        synchronized (lockOOS) {
+            outOfSight = false;
+            lockOOS.notifyAll();
+        }
+        super.onStart();
     }
 
     @Override
     public void onBackPressed()
     {
 
+    }
+
+    private void cicloUIMessaggi(String domanda, String rispostaPositiva, String rispostaNegativa, String endPos, String endNeg) {
+
+        synchronized (chat) {
+
+            chat.add(new Messaggio(domanda, UtenteEnum.ROBOT));
+            adapterChat.notifyItemInserted(chat.size() - 1);
+            bottonePositivo.setText(rispostaPositiva);
+            bottoneNegativo.setText(rispostaNegativa);
+            bottonePositivo.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    synchronized(chat) {
+                        chat.add(new Messaggio(rispostaPositiva, UtenteEnum.UTENTE));
+                        adapterChat.notifyItemInserted(chat.size() - 1);
+                        Handler handler = new Handler();
+                        bottonePositivo.setText("");
+                        bottoneNegativo.setText("");
+                        bottonePositivo.setClickable(false);
+                        bottoneNegativo.setClickable(false);
+
+                        handler.postDelayed(new Runnable() {
+                            public void run() {
+                                synchronized (chat) {
+                                    if (!chat.get(chat.size() - 1).getTesto().startsWith("Il tuo drink e' pronto.")) {
+                                        chat.add(new Messaggio(endPos, UtenteEnum.ROBOT));
+                                        adapterChat.notifyItemInserted(chat.size() - 1);
+                                    }
+                                    serveNuovoMessaggio = true;
+                                    chat.notifyAll();
+                                }
+                            }
+                        }, 1000);
+                    }
+                }
+            });
+
+            bottoneNegativo.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    synchronized (chat) {
+                        chat.add(new Messaggio(rispostaNegativa, UtenteEnum.UTENTE));
+                        adapterChat.notifyItemInserted(chat.size() - 1);
+                        Handler handler = new Handler();
+                        bottonePositivo.setText("");
+                        bottoneNegativo.setText("");
+                        bottonePositivo.setClickable(false);
+                        bottoneNegativo.setClickable(false);
+
+                        handler.postDelayed(new Runnable() {
+                            public void run() {
+                                synchronized (chat) {
+                                    if (!chat.get(chat.size() - 1).getTesto().startsWith("Il tuo drink e' pronto.")) {
+                                        chat.add(new Messaggio(endNeg, UtenteEnum.ROBOT));
+                                        adapterChat.notifyItemInserted(chat.size() - 1);
+                                    }
+                                    serveNuovoMessaggio = true;
+                                    chat.notifyAll();
+                                }
+                            }
+                        }, 1000);
+                    }
+                }
+            });
+            bottonePositivo.setClickable(true);
+            bottoneNegativo.setClickable(true);
+        }
     }
 
 }

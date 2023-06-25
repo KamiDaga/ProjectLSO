@@ -171,6 +171,7 @@ void printlist()
 //////////////////////////////
 void farewell(pnodet* clientconn)
 {
+    printf("FAREWELL\n");
     char addio[30];
     memset(addio,0,sizeof(addio));
     strcpy(addio,"Alla prossima bevuta!\n");
@@ -194,6 +195,7 @@ void conversation(pnodet* clientconn)
         memset(domanda,0,sizeof(domanda));
         // char* rispostaS = "Dimmi un argomento!";
         // send(clientconn->socketc, rispostaS,strlen(rispostaS),0);
+        printf("CONVERSAZIONE\n");
 
         if(read(clientconn->socketc,rispostain,sizeof(rispostain))==0)
         {
@@ -206,15 +208,17 @@ void conversation(pnodet* clientconn)
         else if(strcmp(rispostain,"inizio")==0)//Le domande vengono mandate al client nella forma
                                             //DOMANDA/RISPOSTAP/RISPOSTAN/FEEDBACKP/FEEDBACKN
         {
-            strcpy(domanda,"Ciao! Com'e' andata la tua giornata? Spero tutto bene./E' stata abbastanza tranquilla./E' stata un disastro./Mi fa piacere! Spero per te che continui cosi!/Mi dispiace! Spero di riuscire ad alleggeriri la giornata!");
+            strcpy(domanda,"Ciao! Com'e' andata la tua giornata? Spero tutto bene./E' stata abbastanza tranquilla./E' stata un disastro./Mi fa piacere! Spero per te che continui cosi!/Mi dispiace! Spero di riuscire ad alleggeriri la giornata!\n");
             send(clientconn->socketc, domanda,strlen(domanda),0);
         }
         else if(strcmp(rispostain,"fine")==0) //La domanda finale non verra' risposta. Quindi mando DOMANDA////
         {
-            strcpy(domanda,"Il tuo drink e' pronto. Spero di non essermi distratto troppo mentre parlavo con te. A presto!////");
+            strcpy(domanda,"Il tuo drink e' pronto. Spero di non essermi distratto troppo mentre parlavo con te. A presto!////\n");
             send(clientconn->socketc, domanda,strlen(domanda),0);
             fineDialogo=1;
         }
+        else if(strstr(rispostain,"oos") != NULL)
+        {}
         else if (strlen(rispostain)==0)
         {}
         else //abbiamo un tag
@@ -235,7 +239,7 @@ void conversation(pnodet* clientconn)
             }
             // else row = mysql_fetch_row(res);
 
-            sprintf(domanda,"%s/%s/%s/%s/%s",row[0],row[1],row[2],row[3],row[4]);
+            sprintf(domanda,"%s/%s/%s/%s/%s\n",row[0],row[1],row[2],row[3],row[4]);
             mysql_free_result(res);
             send(clientconn->socketc, domanda,strlen(domanda),0);
             pthread_mutex_unlock(&mutexDb);
@@ -251,6 +255,7 @@ void serve(pnodet* clientconn, char* drink)
     int prepare = 1;
     int quittiamo = 0;
     int gochat = 0;
+    int uscitaSenzaChat = 0;
     send(clientconn->socketc, request,strlen(request),0);
     while(quittiamo == 0)
     {
@@ -287,6 +292,8 @@ void serve(pnodet* clientconn, char* drink)
                 gochat = 1;
                 quittiamo = 1;
             }
+            else
+                quittiamo = 1;
         }
         else
         {
@@ -298,20 +305,26 @@ void serve(pnodet* clientconn, char* drink)
     {
         if(gochat == 1)
         {
-            // printf("Yuhuuu\n");
-            read(clientconn->socketc,risposta,sizeof(risposta));
-            read(clientconn->socketc,risposta,sizeof(risposta));
-            read(clientconn->socketc,risposta,sizeof(risposta));
+            printf("Yuhuuu\n");
             conversation(clientconn);
         }
         else
         {
-            memset(risposta,0,sizeof(risposta));
-            if(read(clientconn->socketc,risposta,sizeof(risposta))==0) //Essenzialmente il client dice al server che ha finito
-                                                                    //Non importa il contenuto di risposta.
-            {
-                strcpy(risposta,"gone"); //Neanche in questo caso, e' solo per readability del codice
-            }
+            while (uscitaSenzaChat == 0) {
+                memset(risposta,0,sizeof(risposta));
+                if(read(clientconn->socketc,risposta,sizeof(risposta))==0) //Essenzialmente il client dice al server che ha finito
+                                                                        //Non importa il contenuto di risposta.
+                {
+                    strcpy(risposta,"gone"); //Neanche in questo caso, e' solo per readability del codice
+                    uscitaSenzaChat = 1;
+                }
+                else {
+                  if(strstr(risposta,"oos") == NULL)
+                  {
+                      uscitaSenzaChat = 1;
+                  }
+                }
+           }
         }
     }
     pthread_mutex_lock(&mutexQueue);

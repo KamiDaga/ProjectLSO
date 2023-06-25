@@ -31,8 +31,8 @@ public class OutOfSightActivity extends AppCompatActivity {
         bottoneRitorno.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                /*if (getIntent().getStringExtra("NOCOMM") != null)
-                    finish();*/
+                if (getIntent().getStringExtra("NOCOMM") != null)
+                    finish();
 
                 Thread threadOOS = new Thread(()-> {
                     try {

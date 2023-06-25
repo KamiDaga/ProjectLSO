@@ -2,11 +2,9 @@ package com.example.robotstatesapplication.Views;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
-import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -18,7 +16,6 @@ import com.example.robotstatesapplication.Models.SocketSingleton;
 import com.example.robotstatesapplication.R;
 import com.example.robotstatesapplication.Utils.AlertBuilder;
 
-import java.io.IOException;
 import java.util.ArrayList;
 
 public class WaitingActivity extends AppCompatActivity {
@@ -39,7 +36,7 @@ public class WaitingActivity extends AppCompatActivity {
 
         setContentView(R.layout.activity_waiting);
 
-        bottoneOutOfSight = findViewById(R.id.bottoneOutOfSightWaiting);
+        bottoneOutOfSight = findViewById(R.id.bottoneOutOfSightFarewelling);
 
         tvPrompt = findViewById(R.id.promptWaiting);
 
@@ -69,7 +66,6 @@ public class WaitingActivity extends AppCompatActivity {
                 }
             } catch (Exception e) {
                 threadHandler.post(()->AlertBuilder.buildAlertSingoloBottone(WaitingActivity.this, "Errore!", "C'è stato un errore di comunicazione, riprovare!" + e.getMessage()));
-                Log.i("STRINGHE", splitDrink[0].toString());
             }
         });
         threadSocket.start();

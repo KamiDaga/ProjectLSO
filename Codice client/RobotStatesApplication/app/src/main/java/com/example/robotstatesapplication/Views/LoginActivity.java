@@ -54,6 +54,8 @@ public class LoginActivity extends AppCompatActivity {
         str.setSpan(new android.text.style.StyleSpan(android.graphics.Typeface.BOLD), 20, 34, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
         textViewRegistrazione.setText(str);
 
+        Handler handler = new Handler();
+
         bottoneRegistrazione.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -99,7 +101,7 @@ public class LoginActivity extends AppCompatActivity {
                                 utenteTrovato = true;
                             } //Se l'utente non è trovato, i booleani sono già a posto, non lo mettiamo come caso in else
                         } catch (IOException e) {
-                            AlertBuilder.buildAlertSingoloBottone(LoginActivity.this, "Errore!", "C'è stato un errore di comunicazione, riprovare!");
+                            handler.post(()->AlertBuilder.buildAlertSingoloBottone(LoginActivity.this, "Errore!", "C'è stato un errore di comunicazione, riprovare!"));
                         }
                     }
 
