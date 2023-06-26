@@ -583,7 +583,7 @@ void welcome(void* client)
                 scorririsposta++;
             }
 
-            sprintf(query,"SELECT password FROM Utenti WHERE username = '%s';",username);
+            sprintf(query,"SELECT password,answer1,answer2 FROM Utenti WHERE username = '%s';",username);
             pthread_mutex_lock(&mutexDb);
             mysql_query(con,query);
             MYSQL_RES *result = mysql_store_result(con);
@@ -602,7 +602,7 @@ void welcome(void* client)
                 {
                     logged = 1;
                     memset(risposta,0,sizeof(risposta));
-                    sprintf(risposta,"Benvenuto, %s!\n", username);
+                    sprintf(risposta,"Benvenuto, %s!-%s-%s\n", username,pass[1],pass[2]);
                     send(clientconn->socketc, risposta,strlen(risposta),0);
                 }
                 else {
