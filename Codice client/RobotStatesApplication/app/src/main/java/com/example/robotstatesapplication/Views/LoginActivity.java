@@ -86,6 +86,8 @@ public class LoginActivity extends AppCompatActivity {
 
                     private boolean successo = false;
                     private boolean utenteTrovato = false;
+                    private String drinkPreferito = null;
+                    private String hobbies = null;
 
                     public void run() {
                         SocketSingleton.getInstance().getSocketOut().print("login-"+username+"-"+password);
@@ -96,6 +98,9 @@ public class LoginActivity extends AppCompatActivity {
                             if (rispostaServer.startsWith("Benvenuto")) {
                                 utenteTrovato = true;
                                 successo = true;
+                                String[] stringheRisposta = rispostaServer.split("-");
+                                drinkPreferito = stringheRisposta[1];
+                                hobbies = stringheRisposta[2];
                             }
                             else if (!rispostaServer.startsWith("Utente non trovato")) {
                                 utenteTrovato = true;
@@ -113,6 +118,13 @@ public class LoginActivity extends AppCompatActivity {
                         return successo;
                     }
 
+                    public String getDrinkPreferito() {
+                        return drinkPreferito;
+                    }
+
+                    public String getHobbies() {
+                        return hobbies;
+                    }
                 }
 
                 ThreadControllo threadSocket = new ThreadControllo();
@@ -133,6 +145,8 @@ public class LoginActivity extends AppCompatActivity {
                     Intent i = new Intent(LoginActivity.this, WelcomeActivity.class);
                     i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                     i.putExtra("USERNAME", username);
+                    i.putExtra("DRINKPREFERITO", threadSocket.getDrinkPreferito());
+                    i.putExtra("HOBBIES", threadSocket.getHobbies());
                     startActivity(i);
                 }
             }

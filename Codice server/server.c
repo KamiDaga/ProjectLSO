@@ -208,7 +208,7 @@ void conversation(pnodet* clientconn)
         else if(strcmp(rispostain,"inizio")==0)//Le domande vengono mandate al client nella forma
                                             //DOMANDA/RISPOSTAP/RISPOSTAN/FEEDBACKP/FEEDBACKN
         {
-            strcpy(domanda,"Ciao! Com'e' andata la tua giornata? Spero tutto bene./E' stata abbastanza tranquilla./E' stata un disastro./Mi fa piacere! Spero per te che continui cosi!/Mi dispiace! Spero di riuscire ad alleggeriri la giornata!\n");
+            strcpy(domanda,"Ciao! Com'e' andata la tua giornata? Spero tutto bene./E' stata abbastanza tranquilla./E' stata un disastro./Mi fa piacere! Spero per te che continui cosi!/Mi dispiace! Spero di riuscire ad alleggerirti la giornata!\n");
             send(clientconn->socketc, domanda,strlen(domanda),0);
         }
         else if(strcmp(rispostain,"fine")==0) //La domanda finale non verra' risposta. Quindi mando DOMANDA////

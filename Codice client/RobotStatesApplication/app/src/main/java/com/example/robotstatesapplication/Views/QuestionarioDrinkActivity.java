@@ -37,12 +37,12 @@ public class QuestionarioDrinkActivity extends AppCompatActivity {
         setContentView(R.layout.activity_questionario_drink);
 
 
-        drinks.put(new Drink(findViewById(R.id.iconaDrink1), "Pina colada", CaratteristicaDrinkEnum.DOLCE, "Rum"), false);
+        drinks.put(new Drink(findViewById(R.id.iconaDrink1), "Pina Colada", CaratteristicaDrinkEnum.DOLCE, "Rum"), false);
         drinks.put(new Drink(findViewById(R.id.iconaDrink2), "Mudslide", CaratteristicaDrinkEnum.DOLCE, "Vodka"), false);
-        drinks.put(new Drink(findViewById(R.id.iconaDrink3), "Espress 75", CaratteristicaDrinkEnum.DOLCE, "Gin"), false);
+        drinks.put(new Drink(findViewById(R.id.iconaDrink3), "Empress 75", CaratteristicaDrinkEnum.DOLCE, "Gin"), false);
         drinks.put(new Drink(findViewById(R.id.iconaDrink4), "Rum Manhattan", CaratteristicaDrinkEnum.AMARO, "Rum"), false);
         drinks.put(new Drink(findViewById(R.id.iconaDrink5), "Negroski", CaratteristicaDrinkEnum.AMARO, "Vodka"), false);
-        drinks.put(new Drink(findViewById(R.id.iconaDrink6), "Martini", CaratteristicaDrinkEnum.AMARO, "Gin"), false);
+        drinks.put(new Drink(findViewById(R.id.iconaDrink6), "Martini Bianco", CaratteristicaDrinkEnum.AMARO, "Gin"), false);
         drinks.put(new Drink(findViewById(R.id.iconaDrink7), "Mojito", CaratteristicaDrinkEnum.FRUTTATO, "Rum"), false);
         drinks.put(new Drink(findViewById(R.id.iconaDrink8), "Cosmopolitan", CaratteristicaDrinkEnum.FRUTTATO, "Vodka"), false);
         drinks.put(new Drink(findViewById(R.id.iconaDrink9), "Gin fizz", CaratteristicaDrinkEnum.FRUTTATO, "Gin"), false);

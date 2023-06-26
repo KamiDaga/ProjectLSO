@@ -41,6 +41,7 @@ public class ServingActivityInteracting extends AppCompatActivity {
     private boolean outOfSight;
     private Object lockOOS = new Object();
     private boolean serveNuovoMessaggio;
+    private String hobbies [];
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,6 +60,7 @@ public class ServingActivityInteracting extends AppCompatActivity {
         bottoneOutOfSight = findViewById(R.id.bottoneOutOfSightServingInteracting);
 
         drinkCorrente = (Drink)getIntent().getSerializableExtra("DRINK");
+        hobbies = getIntent().getStringExtra("HOBBIES").split("/");
         tempoDrink = drinkCorrente.getTempoPreparazione();
 
         adapterChat = new ListaMessaggiAdapter(ServingActivityInteracting.this, chat);
@@ -106,10 +108,17 @@ public class ServingActivityInteracting extends AppCompatActivity {
                 bottoneNegativo.setClickable(false);
             });
             while (!Thread.currentThread().isInterrupted()) {
-                if (counter == 1)
-                    richiesta = "inizio";
-                else
-                    richiesta = "caso";
+                switch (counter) {
+                    case 1: richiesta = "inizio";
+                            break;
+                    case 2: richiesta = hobbies[0];
+                        break;
+                    case 3: richiesta = hobbies[1];
+                        break;
+                    case 4: richiesta = hobbies[2];
+                        break;
+                    default: richiesta = "caso";
+                }
 
                 SocketSingleton.getInstance().getSocketOut().print(richiesta);
                 SocketSingleton.getInstance().getSocketOut().flush();

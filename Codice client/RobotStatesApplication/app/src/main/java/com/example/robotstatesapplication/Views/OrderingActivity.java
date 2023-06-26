@@ -160,6 +160,7 @@ public class OrderingActivity extends AppCompatActivity {
                         };
                         Intent i = new Intent(OrderingActivity.this, ServingActivityInteracting.class);
                         i.putExtra("DRINK", drinkScelto);
+                        i.putExtra("HOBBIES", getIntent().getStringExtra("HOBBIES"));
                         i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                         startActivity(i);
                     }
@@ -192,6 +193,13 @@ public class OrderingActivity extends AppCompatActivity {
         Button noButton = alert.getButton(DialogInterface.BUTTON_NEUTRAL);
         noButton.setBackgroundColor(Color.parseColor("#FFFFFF"));
         noButton.setTextColor(Color.parseColor("#0E0D57"));
+    }
+
+
+    @Override
+    public void onBackPressed()
+    {
+
     }
 
 }

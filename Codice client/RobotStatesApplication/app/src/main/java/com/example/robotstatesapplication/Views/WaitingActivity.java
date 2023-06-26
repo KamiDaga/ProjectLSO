@@ -61,6 +61,8 @@ public class WaitingActivity extends AppCompatActivity {
                     threadHandler.post(()->{
                         Intent i = new Intent(WaitingActivity.this, SuggestedOrderingActivity.class);
                         i.putExtra("MENU", menù);
+                        i.putExtra("DRINKPREFERITO", getIntent().getStringExtra("DRINKPREFERITO"));
+                        i.putExtra("HOBBIES", getIntent().getStringExtra("HOBBIES"));
                         startActivity(i);
                     });
                 }

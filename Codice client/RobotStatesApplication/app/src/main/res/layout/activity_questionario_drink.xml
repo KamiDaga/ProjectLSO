@@ -135,7 +135,7 @@
                 android:maxWidth="24dp"
                 android:maxHeight="24dp"
                 android:scaleType="fitXY"
-                android:src="@drawable/drinkespress75" />
+                android:src="@drawable/drinkempress75" />
 
         </TableRow>
 
