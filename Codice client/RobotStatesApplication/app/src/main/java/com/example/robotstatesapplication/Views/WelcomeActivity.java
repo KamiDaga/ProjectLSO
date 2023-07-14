@@ -69,6 +69,11 @@ public class WelcomeActivity extends AppCompatActivity {
         bottoneOrdina.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Thread newThread = new Thread(()->{
+                    SocketSingleton.getInstance().getSocketOut().print("ORDER");
+                    SocketSingleton.getInstance().getSocketOut().flush();
+                });
+                newThread.start();
                 Intent i = new Intent(WelcomeActivity.this, WaitingActivity.class);
                 i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 i.putExtra("USERNAME", username);

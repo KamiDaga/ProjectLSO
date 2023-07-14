@@ -16,7 +16,7 @@ public class SocketSingleton {
 
     private SocketSingleton() {
         try {
-            appSocket = new Socket("192.168.1.104", 5000);
+            appSocket = new Socket("192.168.1.105", 5000);
             socketOut = new PrintWriter(appSocket.getOutputStream());
             socketIn = new BufferedReader(new InputStreamReader(appSocket.getInputStream()));
         } catch (IOException e) {
@@ -31,6 +31,13 @@ public class SocketSingleton {
     }
 
     public static void rinnovaIstanza() {
+        try {
+            instance.appSocket.close();
+            instance.socketOut.close();
+            instance.socketIn.close();
+        } catch (IOException e) {
+        }
+
         instance = new SocketSingleton();
     }
 

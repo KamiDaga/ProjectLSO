@@ -35,6 +35,7 @@ public class FarewellingActivity extends AppCompatActivity {
         bottoneUscita.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                bottoneUscita.setClickable(false);
                 Thread threadUscita = new Thread(()->{
                     try {
                         SocketSingleton.getInstance().getSocketIn().readLine();

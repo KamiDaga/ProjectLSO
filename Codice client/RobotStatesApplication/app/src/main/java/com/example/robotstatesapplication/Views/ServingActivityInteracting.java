@@ -42,6 +42,7 @@ public class ServingActivityInteracting extends AppCompatActivity {
     private Object lockOOS = new Object();
     private boolean serveNuovoMessaggio;
     private String hobbies [];
+    private TextView promptServing;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,6 +59,7 @@ public class ServingActivityInteracting extends AppCompatActivity {
         viewRoot = findViewById(R.id.rootServing);
         tvContatore = findViewById(R.id.contatoreServingInteracting);
         bottoneOutOfSight = findViewById(R.id.bottoneOutOfSightServingInteracting);
+        promptServing = findViewById(R.id.promptServing);
 
         drinkCorrente = (Drink)getIntent().getSerializableExtra("DRINK");
         hobbies = getIntent().getStringExtra("HOBBIES").split("/");
@@ -67,6 +69,8 @@ public class ServingActivityInteracting extends AppCompatActivity {
         rvChat.setAdapter(adapterChat);
         LinearLayoutManager manager = new LinearLayoutManager(this);
         rvChat.setLayoutManager(manager);
+
+        promptServing.setText("Sto preparando il drink che hai scelto: " + drinkCorrente.getNome());
 
         viewRoot.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override

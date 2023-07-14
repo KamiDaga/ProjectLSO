@@ -26,6 +26,7 @@ public class ServingActivityNotInteracting extends AppCompatActivity {
     boolean outOfSight = false;
 
     private Object lockOOS = new Object();
+    private TextView promptServing;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,9 +39,12 @@ public class ServingActivityNotInteracting extends AppCompatActivity {
 
         tvContatore = findViewById(R.id.contatoreServingNotInteracting);
         bottoneOutOfSight = findViewById(R.id.bottoneOutOfSightServingNotInteracting);
+        promptServing = findViewById(R.id.promptServingNotInteracting);
 
         drinkCorrente = (Drink)getIntent().getSerializableExtra("DRINK");
         tempoDrink = drinkCorrente.getTempoPreparazione();
+
+        promptServing.setText("Sto preparando il drink che hai scelto: " + drinkCorrente.getNome());
 
         bottoneOutOfSight.setOnClickListener(new View.OnClickListener() {
             @Override

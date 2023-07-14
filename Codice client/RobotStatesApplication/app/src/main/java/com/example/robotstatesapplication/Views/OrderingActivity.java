@@ -51,7 +51,9 @@ public class OrderingActivity extends AppCompatActivity {
         bottoneEsci = findViewById(R.id.bottoneTornaAlLoginOrdering);
         bottoneOutOfSight = findViewById(R.id.bottoneOutOfSightOrdering);
 
+        listaDrink.clear();
        listaDrink.addAll((ArrayList<Drink>)getIntent().getSerializableExtra("MENU"));
+       gruppoRadioDrink.removeAllViews();
 
         for (Drink drink : listaDrink) {
             RadioButton radioDrinkCorrente = new RadioButton(OrderingActivity.this);
@@ -69,7 +71,8 @@ public class OrderingActivity extends AppCompatActivity {
         gruppoRadioDrink.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(RadioGroup group, int checkedId) {
-                drinkScelto = listaDrink.get(checkedId-1);
+                int index = group.indexOfChild(findViewById(checkedId));
+                drinkScelto = listaDrink.get(index);
             }
         });
 
